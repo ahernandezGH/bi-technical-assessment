@@ -1,0 +1,72 @@
+# SQL Server Backups
+*.bak
+*.bak.*
+*.trn
+
+# Output files (temporary)
+OUTPUT_*.txt
+OUTPUT_*.csv
+OUTPUT_*.log
+
+# Solutions modelo (privadas, no exponer a candidatos)
+Database/04_Solutions/*
+
+# SQL Server temporary files
+*.mdf
+*.ldf
+*.ndf
+
+# SSMS temporary files
+*.sql~
+*_backup.sql
+
+# PowerShell temporary files
+TEMP_*.ps1
+WIP_*.ps1
+DEBUG_*.ps1
+DRAFT_*.ps1
+BACKUP_*.ps1
+
+# Execution plans
+*.sqlplan
+
+# VS Code workspace
+.vscode/
+*.code-workspace
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+bin/
+obj/
+*.Cache
+
+# Tabular Editor
+*.pbit
+*.te3prefs
+TabularEditor3Settings.json
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node modules (si usas herramientas JS)
+node_modules/
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.local
+*.env
+
+# Sensitive data
+*_credentials.json
+*_secrets.json
+connection_strings.txt
