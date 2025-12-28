@@ -16,12 +16,12 @@
 
 ---
 
-## 🔧 Requisitos Previos
+## Requisitos Previos
 
-### Software Obligatorio
+### 🔧 Software Obligatorio
 
 | Software | Versión Mínima | Propósito |
-|----------|-----------------|----------|
+| ---------- | ----------------- | ---------- |
 | **SQL Server** | 2019 Express/Developer | Database para assessment |
 | **SSMS** | 18.0+ | Editor SQL + management |
 | **PowerShell** | 5.1 (Windows) / 7.0+ (otros) | Validators + scripts ETL |
@@ -53,17 +53,19 @@ sqlcmd /?
 
 ---
 
-## 💻 Instalación por Sistema Operativo
+## Instalación por Sistema Operativo
 
-### Windows 10/11
+### 💻 Windows 10/11
 
 #### 1. SQL Server 2019 Express
 
 **Descarga**:
+
 - [SQL Server 2019 Express Edition](https://www.microsoft.com/en-us/sql-server/sql-server-editions-express)
 - Archivo: `SQLServer2019-SSEI-Expr.exe` (~1.5 GB)
 
 **Instalación**:
+
 ```powershell
 # 1. Ejecutar instalador
 .\SQLServer2019-SSEI-Expr.exe
@@ -82,6 +84,7 @@ sqlcmd /?
 ```
 
 **Verificar instalación**:
+
 ```powershell
 # Conectar con Windows Auth (default)
 sqlcmd -S localhost
@@ -97,10 +100,12 @@ exit
 #### 2. SQL Server Management Studio (SSMS)
 
 **Descarga**:
+
 - [SSMS 19.0+](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms)
 - Archivo: `SSMS-Setup-ENU.exe` (~500 MB)
 
 **Instalación**:
+
 ```powershell
 # 1. Ejecutar instalador
 .\SSMS-Setup-ENU.exe
@@ -111,6 +116,7 @@ exit
 ```
 
 **Verificar conexión**:
+
 - Abrir SSMS
 - Server name: `localhost` (o `.\MSSQLSERVER` si cambió nombre)
 - Authentication: Windows Authentication (default)
@@ -119,10 +125,12 @@ exit
 #### 3. Git for Windows
 
 **Descarga**:
+
 - [Git for Windows](https://gitforwindows.org/)
 - Archivo: `Git-2.xxx-64-bit.exe`
 
 **Instalación**:
+
 ```powershell
 # 1. Ejecutar instalador
 .\Git-2.xxx-64-bit.exe
@@ -140,6 +148,7 @@ git config --global user.email "tu.email@ejemplo.com"
 ```
 
 **Verificar instalación**:
+
 ```powershell
 git --version
 # Output: git version 2.xxx
@@ -151,18 +160,20 @@ git config --list
 #### 4. Visual Studio Code (Opcional)
 
 **Descarga**:
+
 - [VS Code](https://code.visualstudio.com/download)
 - Archivo: `VSCodeUserSetup-x64-1.xxx.exe`
 
 **Extensiones Recomendadas**:
-```
+
+```text
 - mssql (Microsoft)
 - PowerShell (Microsoft)
 - Git Graph
 - Markdown All in One
 ```
 
-### macOS
+### 💻 macOS
 
 #### 1. SQL Server (Docker Alternative)
 
@@ -189,6 +200,7 @@ docker ps | grep mssql2019
 ```
 
 **Conectar desde sqlcmd**:
+
 ```bash
 sqlcmd -S localhost,1433 -U sa -P 'YourPassword123!'
 ```
@@ -213,7 +225,7 @@ brew install mssql-tools
 brew install --cask visual-studio-code
 ```
 
-### Linux (Ubuntu 20.04+)
+### 💻 Linux (Ubuntu 20.04+)
 
 #### 1. SQL Server (Docker)
 
@@ -256,9 +268,9 @@ sudo snap install --classic code
 
 ---
 
-## 🗄️ Configuración de SQL Server
+## Configuración de SQL Server
 
-### 1. Crear Databases
+### 🗄️ 1. Crear Databases
 
 ```powershell
 # Variables
@@ -288,7 +300,8 @@ sqlcmd -S $ServerName -U sa -P $SaPassword -Q $sqlScript
 ```
 
 **Output esperado**:
-```
+
+```text
 name                          create_date
 SchoolERP_Source              2024-12-28 10:30:45.123
 BI_Assessment_Staging         2024-12-28 10:30:45.567
@@ -354,12 +367,13 @@ SELECT COUNT(*) AS TerminosCount FROM erp.erp_term_catalog;
 
 ---
 
-## 🎯 Setup del Repositorio
+## Setup del Repositorio
 
-### 1. Fork del Repositorio
+### 🎯 1. Fork del Repositorio
 
 **En GitHub**:
-```
+
+```text
 1. Ir a https://github.com/ahernandezGH/bi-technical-assessment
 2. Click botón "Fork" (esquina superior derecha)
 3. Seleccionar "Create a new fork"
@@ -417,9 +431,9 @@ git config --global alias.br branch
 
 ---
 
-## ✅ Validación del Entorno
+## Validación del Entorno
 
-### 1. Ejecutar Test-Environment.ps1
+### ✅ 1. Ejecutar Test-Environment.ps1
 
 ```powershell
 # Desde raíz del repositorio
@@ -445,6 +459,7 @@ cd C:\Projects\bi-technical-assessment
 ```
 
 **Si falla algún check**:
+
 1. Revisa el mensaje de error específico
 2. Consulta sección [Troubleshooting](#troubleshooting)
 3. Intenta corregir y re-ejecutar
@@ -485,14 +500,16 @@ Remove-Item test-clone -Recurse
 
 ---
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
-### Problema: "sqlcmd not recognized"
+### Problema: "sqlcmd not recognized" 🔧
 
 **Causa**: sqlcmd no está en PATH
 
 **Soluciones**:
+
 1. **Windows**: Agregar SQL Tools a PATH
+
    ```powershell
    $env:PATH += ";C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn"
    # Hacer permanente:
@@ -500,6 +517,7 @@ Remove-Item test-clone -Recurse
    ```
 
 2. **macOS/Linux**: Usar full path
+
    ```bash
    /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P password
    ```
@@ -509,6 +527,7 @@ Remove-Item test-clone -Recurse
 **Causa más común**: Password incorrecto o SQL Server no corriendo
 
 **Pasos**:
+
 ```powershell
 # 1. Verificar SQL Server corriendo (Windows)
 Get-Service MSSQLSERVER | Select-Object Status
@@ -528,6 +547,7 @@ sqlcmd -S localhost -U sa -Q "ALTER LOGIN [sa] WITH PASSWORD = 'NuevaPassword123
 **Causa**: Política de ejecución de scripts
 
 **Solución**:
+
 ```powershell
 # Ver política actual
 Get-ExecutionPolicy
@@ -543,6 +563,7 @@ Get-ExecutionPolicy
 ### Problema: "Git credentials keep asking for password"
 
 **Solución 1 - Credential Manager (Windows)**:
+
 ```powershell
 # Opción A: GitHub Personal Access Token
 # 1. Generar token en GitHub (Settings → Developer settings → Personal access tokens)
@@ -553,6 +574,7 @@ git config --global credential.helper wincred
 ```
 
 **Solución 2 - SSH Keys (todas las plataformas)**:
+
 ```bash
 # Generar key
 ssh-keygen -t ed25519 -C "tu.email@ejemplo.com"
@@ -568,6 +590,7 @@ ssh -T git@github.com
 **Causa**: Otro proceso usando puerto SQL Server
 
 **Soluciones**:
+
 ```bash
 # Opción A: Usar puerto diferente
 docker run -e 'ACCEPT_EULA=Y' \
@@ -600,17 +623,21 @@ MODIFY FILE (
 ### Problema: Validator falla con "Cannot connect to database"
 
 **Checks**:
+
 1. ¿SQL Server está corriendo?
+
    ```powershell
    sqlcmd -S localhost -U sa -P password -Q "SELECT 1"
    ```
 
 2. ¿Databases existen?
+
    ```powershell
    sqlcmd -S localhost -U sa -P password -Q "SELECT name FROM sys.databases"
    ```
 
 3. ¿Schemas creados?
+
    ```powershell
    sqlcmd -S localhost -U sa -P password -d SchoolERP_Source -Q "SELECT name FROM sys.schemas"
    ```
@@ -627,7 +654,7 @@ Si encuentras problemas durante setup:
 
 1. **Consulta FAQ**: Busca tu error en sección Troubleshooting
 2. **GitHub Issues**: [Crear issue en repositorio](https://github.com/ahernandezGH/bi-technical-assessment/issues)
-3. **Email**: alvaro.hernandez@uft.cl
+3. **Email**: <alvaro.hernandez@uft.cl>
 
 ---
 
