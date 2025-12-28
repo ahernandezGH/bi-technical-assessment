@@ -1,0 +1,200 @@
+name: Validate Solution
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+jobs:
+  parse-pr-title:
+    name: Parse PR Title
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.pull_request.title, 'Solution - ')
+    outputs:
+      candidate: ${{ steps.parse.outputs.candidate }}
+      issue: ${{ steps.parse.outputs.issue }}
+    steps:
+      - name: Parse PR Title
+        id: parse
+        run: |
+          TITLE="${{ github.event.pull_request.title }}"
+          echo "PR Title: $TITLE"
+          
+          # Expected format: "Solution - [Candidate] - Issue [00X]"
+          if [[ $TITLE =~ ^Solution\ -\ \[([^\]]+)\]\ -\ Issue\ \[([0-9]{3})\]$ ]]; then
+            CANDIDATE="${BASH_REMATCH[1]}"
+            ISSUE="${BASH_REMATCH[2]}"
+            echo "candidate=$CANDIDATE" >> $GITHUB_OUTPUT
+            echo "issue=$ISSUE" >> $GITHUB_OUTPUT
+            echo "Candidate: $CANDIDATE"
+            echo "Issue: $ISSUE"
+          else
+            echo "ERROR: PR title does not match expected format"
+            echo "Expected: 'Solution - [Candidate] - Issue [00X]'"
+            echo "Got: '$TITLE'"
+            exit 1
+          fi
+
+  validate-solution:
+    name: Validate Solution
+    runs-on: windows-latest
+    needs: parse-pr-title
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      
+      - name: Verify Solution Files
+        id: verify
+        run: |
+          $candidate = "${{ needs.parse-pr-title.outputs.candidate }}"
+          $issue = "${{ needs.parse-pr-title.outputs.issue }}"
+          $solutionPath = "Solutions\$candidate\Issue$issue"
+          
+          Write-Host "Checking for solution at: $solutionPath"
+          
+          if (-not (Test-Path $solutionPath)) {
+            Write-Host "ERROR: Solution directory not found at $solutionPath"
+            exit 1
+          }
+          
+          Write-Host "Solution directory found"
+          Get-ChildItem $solutionPath -Recurse | ForEach-Object { Write-Host "  - $($_.Name)" }
+        shell: pwsh
+      
+      - name: Setup SQL Server
+        uses: ankane/setup-sqlserver@v1
+        with:
+          accept-eula: true
+      
+      - name: Create Test Databases
+        run: |
+          Write-Host "Creating test databases..."
+          sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'SchoolERP_Source') CREATE DATABASE SchoolERP_Source;"
+          sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'BI_Assessment_Staging') CREATE DATABASE BI_Assessment_Staging;"
+          sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'BI_Assessment_DWH') CREATE DATABASE BI_Assessment_DWH;"
+          Write-Host "Databases created"
+        shell: pwsh
+      
+      - name: Load Test Schemas and Data
+        run: |
+          Write-Host "Loading schemas..."
+          Get-ChildItem "Database\01_Schemas" -Filter "*.sql" | Sort-Object Name | ForEach-Object {
+            Write-Host "Executing: $($_.Name)"
+            sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -i $_.FullName
+          }
+          
+          Write-Host "Loading test data..."
+          Get-ChildItem "Database\02_Data" -Filter "*.sql" | Sort-Object Name | ForEach-Object {
+            Write-Host "Executing: $($_.Name)"
+            sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -i $_.FullName
+          }
+          Write-Host "Environment setup complete"
+        shell: pwsh
+      
+      - name: Run Validator
+        id: validate
+        continue-on-error: true
+        run: |
+          $candidate = "${{ needs.parse-pr-title.outputs.candidate }}"
+          $issue = "${{ needs.parse-pr-title.outputs.issue }}"
+          
+          Write-Host "Running validator for Candidate: $candidate, Issue: $issue"
+          
+          $output = & ".\Tools\Validate-Solution.ps1" `
+            -Issue $issue `
+            -Candidate $candidate `
+            -ServerName "localhost" `
+            -Username "sa" `
+            -Password "YourStrong@Passw0rd" `
+            2>&1 | Out-String
+          
+          # Save output for comment
+          $output | Out-File -FilePath "validation-output.txt" -Encoding UTF8
+          
+          Write-Host $output
+        shell: pwsh
+      
+      - name: Extract Score and Status
+        id: extract
+        run: |
+          $content = Get-Content "validation-output.txt" -Raw
+          
+          # Extract score (format: "SCORE: XX/100")
+          if ($content -match 'SCORE:\s*(\d+)/(\d+)') {
+            $score = $matches[1]
+            $maxScore = $matches[2]
+            echo "score=$score" >> $env:GITHUB_OUTPUT
+            echo "max_score=$maxScore" >> $env:GITHUB_OUTPUT
+            Write-Host "Score: $score/$maxScore"
+          }
+          
+          # Extract status (format: "STATUS: PASS [OK]" or "STATUS: FAIL [FAIL]")
+          if ($content -match 'STATUS:\s*(PASS|FAIL)') {
+            $status = $matches[1]
+            echo "status=$status" >> $env:GITHUB_OUTPUT
+            Write-Host "Status: $status"
+          }
+        shell: pwsh
+      
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const candidate = '${{ needs.parse-pr-title.outputs.candidate }}';
+            const issue = '${{ needs.parse-pr-title.outputs.issue }}';
+            const score = '${{ steps.extract.outputs.score }}';
+            const maxScore = '${{ steps.extract.outputs.max_score }}';
+            const status = '${{ steps.extract.outputs.status }}';
+            
+            const output = fs.readFileSync('validation-output.txt', 'utf8');
+            
+            const statusEmoji = status === 'PASS' ? '✅' : '❌';
+            const statusColor = status === 'PASS' ? '🟢' : '🔴';
+            
+            const body = `## ${statusEmoji} Solution Validation Results
+            
+            **Candidate:** ${candidate}  
+            **Issue:** ${issue}  
+            **Score:** ${score}/${maxScore} points  
+            **Status:** ${statusColor} **${status}**
+            
+            ---
+            
+            <details>
+            <summary>📋 Full Validation Output</summary>
+            
+            \`\`\`
+            ${output}
+            \`\`\`
+            
+            </details>
+            
+            ---
+            
+            ${status === 'PASS' 
+              ? '🎉 **Congratulations!** Your solution meets the minimum requirements (≥70 points). You are eligible for Phase 2 (Technical Interview).' 
+              : '⚠️ **Improvements Needed:** Your solution does not meet the minimum requirements (≥70 points). Please review the feedback above and resubmit (1 retry allowed).'}
+            
+            ---
+            
+            *Auto-generated by [validate-solution.yml](../.github/workflows/validate-solution.yml)*
+            `;
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+      
+      - name: Set Status Check
+        if: steps.extract.outputs.status == 'FAIL'
+        run: |
+          Write-Host "Solution validation FAILED"
+          exit 1
+        shell: pwsh

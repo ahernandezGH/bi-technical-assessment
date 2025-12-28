@@ -1,124 +1,377 @@
-# 🎯 BI Technical Assessment Repository
+# BI Technical Assessment
 
-**Propósito:** Repositorio de evaluación técnica para candidatos a posiciones de Ingeniero BI, con énfasis en modelado dimensional, T-SQL avanzado y extracción de datos ERP.
+**Universidad Finis Terrae - Business Intelligence Platform**
 
----
-
-## 📚 Estructura del Repositorio
-
-```
-bi-technical-assessment/
-├── README.md                    ← Este archivo
-├── SETUP.md                     ← Instrucciones de instalación (próximamente)
-├── .github/workflows/           ← CI/CD (próximamente)
-├── Database/                    ← Scripts SQL y datos
-│   ├── 01_Schema/              ← CREATE scripts
-│   ├── 02_Data/                ← LOAD scripts y generadores
-│   ├── 03_Baseline/            ← Backup .bak
-│   └── 04_Solutions/           ← Soluciones modelo (privado)
-├── Issues/                      ← 7 retos técnicos
-│   ├── Issue001/               ← Validación integridad
-│   ├── Issue002/               ← Optimización performance
-│   ├── Issue003/               ← Refactorización ETL
-│   ├── Issue004/               ← Diseño dimensional
-│   ├── Issue005/               ← Extracción ERP histórica
-│   ├── Issue006/               ← Fact table grain
-│   └── Issue007/               ← Navegación multi-tabla
-├── Standards/                   ← Estándares simplificados
-├── Tools/                       ← Scripts de validación
-└── Model/                       ← Proyecto tabular (opcional)
-```
+Repositorio de evaluación técnica para candidatos a posiciones de BI Developer/Data Engineer.
 
 ---
 
-## 🚀 Quick Start
+## � Índice
 
-### Prerrequisitos
+- [Descripción General](#descripción-general)
+- [Catálogo de Issues](#catálogo-de-issues)
+- [Quickstart para Candidatos](#quickstart-para-candidatos)
+- [Sistema de Scoring](#sistema-de-scoring)
+- [Entorno de Desarrollo](#entorno-de-desarrollo)
+- [FAQ](#faq)
 
-- SQL Server 2019+ (Express/Developer/LocalDB)
-- SSMS 18+
+---
+
+## 🎯 Descripción General
+
+Este assessment evalúa habilidades en:
+- **SQL Server**: T-SQL, stored procedures, integridad referencial
+- **ETL Patterns**: Staging → DWH → Views (arquitectura UFT_FIN)
+- **Data Quality**: Validación de datos, detección de inconsistencias
+- **Documentation**: Capacidad de explicar soluciones técnicas
+
+**Formato**:
+- 7 issues técnicos independientes
+- Cada candidato resuelve 1 issue asignado
+- Tiempo: 4-6 horas (sin límite estricto)
+- Entrega: Pull Request con título específico
+- Scoring: 100 puntos (mínimo 70 para aprobar)
+
+**Proceso**:
+1. **Fork** este repositorio
+2. **Resolver** el issue asignado en `Solutions/[TuNombre]/Issue[00X]/`
+3. **Pull Request** con título: `Solution - [TuNombre] - Issue [00X]`
+4. **Auto-grading** vía GitHub Actions (comentario con score)
+5. **Review manual** si score ≥ 70 (technical interview)
+
+---
+
+## 📂 Catálogo de Issues
+
+| Issue | Título | Dificultad | Archivos | Puntos | Tiempo Est. |
+|-------|--------|------------|----------|--------|-------------|
+| [001](Issues/Issue001_ValidacionIntegridad/) | Validación de Integridad Referencial | ⭐⭐ | 2 SQL + 1 DOC | 70 | 4h |
+| [002](Issues/Issue002_DeteccionHuerfanos/) | Detección de Registros Huérfanos | ⭐⭐⭐ | 3 SQL + 1 DOC | 100 | 5h |
+| [003](Issues/Issue003_SincronizacionCatalogos/) | Sincronización de Catálogos | ⭐⭐⭐ | 2 SQL + 1 PS1 + 1 DOC | 75 | 5h |
+| [004](Issues/Issue004_MaterializacionVistas/) | Materialización de Vistas | ⭐⭐⭐⭐ | 3 SQL + 1 DOC | 85 | 6h |
+| [005](Issues/Issue005_AuditoriaEjecuciones/) | Sistema de Auditoría de Ejecuciones | ⭐⭐⭐⭐ | 4 SQL + 1 DOC | 90 | 6h |
+| [006](Issues/Issue006_ExtraccionBanner/) | Extracción de Datos desde Oracle Banner | ⭐⭐⭐⭐⭐ | 2 SQL + 1 PS1 + 1 DOC | 95 | 7h |
+| [007](Issues/Issue007_IntegracionCompleta/) | Integración End-to-End (Matrícula + Beneficios) | ⭐⭐⭐⭐⭐ | 5 SQL + 1 PS1 + 1 DOC | 100 | 8h |
+
+**Leyenda**:
+- ⭐ = Básico (conocimientos SQL fundamentales)
+- ⭐⭐⭐ = Intermedio (procedures, CTEs, error handling)
+- ⭐⭐⭐⭐⭐ = Avanzado (ETL completo, PowerShell, cross-database)
+
+---
+
+## 🚀 Quickstart para Candidatos
+
+### 1. Fork y Clone
+
+```bash
+# Fork en GitHub UI: Click "Fork" button
+# Luego clone tu fork
+git clone https://github.com/[TU_USERNAME]/bi-technical-assessment.git
+cd bi-technical-assessment
+```
+
+### 2. Setup del Entorno Local
+
+**Requisitos**:
+- SQL Server 2019+ (Developer/Express Edition)
+- SQL Server Management Studio (SSMS)
 - PowerShell 5.1+
 - Git 2.30+
 
-### Instalación
+**Crear Databases**:
+```powershell
+# Ejecutar desde raíz del repositorio
+cd Database\01_Schemas
+sqlcmd -S [TU_SERVIDOR] -E -i CREATE_SchoolERP_Source.sql
+sqlcmd -S [TU_SERVIDOR] -E -i CREATE_BI_Assessment_Staging.sql
+sqlcmd -S [TU_SERVIDOR] -E -i CREATE_BI_Assessment_DWH.sql
 
-```bash
-# 1. Fork este repositorio
-# 2. Clone tu fork
-git clone https://github.com/TU-USUARIO/bi-technical-assessment.git
-cd bi-technical-assessment
-
-# 3. Restaurar base de datos (próximamente)
-# Ver SETUP.md para instrucciones detalladas
+# Cargar datos de prueba
+cd ..\02_Data
+sqlcmd -S [TU_SERVIDOR] -E -i LOAD_Basic_TestData.sql
 ```
 
+**Validar Entorno**:
+```powershell
+.\Tools\Test-Environment.ps1 -ServerName "[TU_SERVIDOR]"
+# Debe mostrar: "ENTORNO LISTO PARA EVALUACION" (27/27 checks PASS)
+```
+
+### 3. Trabajar en tu Solución
+
+**Estructura de carpetas**:
+```
+Solutions/
+  [TuNombre]/              # Ej: JuanPerez, MariaGomez
+    Issue[00X]/            # Ej: Issue001, Issue002
+      *.sql                # Scripts SQL requeridos
+      *.ps1                # Scripts PowerShell (si aplica)
+      SOLUTION.md          # Documentación (OBLIGATORIO)
+```
+
+**Ejemplo Issue 001**:
+```
+Solutions/JuanPerez/Issue001/
+  QA_ValidarIntegridadEstudiantes.sql
+  PROC_ValidarIntegridadPreInsert.sql
+  SOLUTION.md
+```
+
+**SOLUTION.md** debe incluir (mínimo 150 palabras):
+- Análisis del problema
+- Metodología de solución
+- Explicación de cada script
+- Queries de validación ejecutados
+- Conclusiones y recomendaciones
+
+### 4. Validar tu Solución Localmente
+
+```powershell
+.\Tools\Validate-Solution.ps1 `
+  -Issue "001" `
+  -Candidate "JuanPerez" `
+  -ServerName "[TU_SERVIDOR]"
+
+# Output esperado:
+#   CHECK 1: Archivos Requeridos      ✓ 25/25 pts
+#   CHECK 2: Sintaxis SQL              ✓ 25/25 pts
+#   CHECK 3: Documentación             ✓ 20/20 pts
+#   CHECK 4: Validación Específica     ✓ 30/30 pts
+#   SCORE: 100/100 - STATUS: PASS
+```
+
+### 5. Crear Pull Request
+
+```bash
+# Commit y push
+git add Solutions/[TuNombre]/
+git commit -m "Solution - [TuNombre] - Issue [00X]"
+git push origin main
+
+# En GitHub: Create Pull Request
+# TÍTULO (CRÍTICO): Solution - [TuNombre] - Issue [00X]
+# Ejemplo: "Solution - [JuanPerez] - Issue [001]"
+```
+
+**⚠️ IMPORTANTE**: El título del PR **DEBE** seguir exactamente el formato:
+```
+Solution - [Candidate] - Issue [00X]
+```
+De lo contrario, el auto-grading no se activará.
+
+### 6. Auto-Grading
+
+GitHub Actions ejecutará automáticamente:
+1. Parse del título del PR
+2. Setup de SQL Server en runner
+3. Carga de schemas y test data
+4. Ejecución de `Validate-Solution.ps1`
+5. Comentario en el PR con score
+
+**Tiempo de ejecución**: ~5-8 minutos
+
+**Resultado**:
+- ✅ **PASS** (≥70 pts): Elegible para Phase 2 (Technical Interview)
+- ❌ **FAIL** (<70 pts): Review feedback, corrige, y resubmit (1 retry permitido)
+
 ---
 
-## 📋 Catálogo de Issues
+## 📊 Sistema de Scoring
 
-| Issue | Nivel | Tiempo | Habilidad Principal |
-|-------|-------|--------|---------------------|
-| **001** | ⭐⭐☆☆☆ Básico | 2-4h | Validación integridad datos |
-| **002** | ⭐⭐⭐☆☆ Medio | 4-6h | Optimización performance SQL |
-| **003** | ⭐⭐⭐⭐☆ Alto | 6-8h | Arquitectura ETL modular |
-| **004** | ⭐⭐⭐☆☆ Medio | 4-6h | Modelado dimensional (SCD) |
-| **005** | ⭐⭐⭐☆☆ Medio | 3-5h | Extracción ERP con precedencia |
-| **006** | ⭐⭐⭐⭐☆ Alto | 5-7h | Fact table grain design |
-| **007** | ⭐⭐⭐⭐☆ Alto | 4-5h | Navegación multi-tabla ERP |
+### Distribución de Puntos (100 pts total)
+
+| Check | Descripción | Puntos | Criterio |
+|-------|-------------|--------|----------|
+| **1. Archivos Requeridos** | Presencia de todos los archivos especificados | 25 | All-or-nothing |
+| **2. Sintaxis SQL** | Scripts ejecutables sin errores (SET PARSEONLY) | 25 | Proporcional (errores penalizan) |
+| **3. Documentación** | SOLUTION.md ≥ 150 palabras | 20 | Proporcional (word count) |
+| **4. Validación Específica** | Query retorna resultado esperado | 30 | All-or-nothing (solo si aplica) |
+
+### Passing Score
+
+- **Mínimo**: 70 puntos
+- **Criterio**: Demuestra competencia técnica básica + documentación adecuada
+- **Retry**: 1 intento adicional permitido si < 70 (feedback detallado proporcionado)
+
+### Ejemplos
+
+**Caso A - PASS (85 pts)**:
+- Archivos: ✓ 25/25 (todos presentes)
+- Sintaxis: ✓ 20/25 (1 warning menor)
+- Documentación: ✓ 20/20 (250 palabras)
+- Validación: ✓ 20/30 (resultado cercano, no exacto)
+
+**Caso B - FAIL (65 pts)**:
+- Archivos: ✓ 25/25
+- Sintaxis: ✗ 15/25 (2 errores de sintaxis)
+- Documentación: ✗ 10/20 (solo 80 palabras)
+- Validación: ✓ 15/30 (lógica parcialmente correcta)
 
 ---
 
-## 📈 Proceso de Evaluación
+## 🛠️ Entorno de Desarrollo
 
-### FASE 1: Take-Home (7 días)
+### Arquitectura de 3 Capas
 
-1. **Selecciona 1 issue** del catálogo según tu nivel
-2. **Desarrolla la solución** en tu fork
-3. **Sube tu branch**: `solution-[tunombre]-issue00X`
-4. **Crea Pull Request** con título: `Solution - [Tu Nombre] - Issue 00X`
-5. **Validación automática** ejecuta y te da score 0-100
+```
+[SchoolERP_Source]          [BI_Assessment_Staging]      [BI_Assessment_DWH]
+  └─ erp schema                └─ cat (catálogos)           └─ cat (dimensiones)
+     ├─ erp_persona               ├─ mat (matrícula)           ├─ mat (hechos)
+     ├─ erp_student_curriculum    └─ ben (beneficios)          └─ ben (hechos)
+     ├─ erp_term_catalog
+     ├─ erp_student_scholarship
+     ├─ erp_student_benefit
+     └─ erp_collection_history
+```
 
-**Criterio:** Score ≥ 70 → Avanza a Fase 2
+**Flujo ETL**:
+1. **Source → Staging**: Validación, transformación, limpieza
+2. **Staging → DWH**: Dimensiones → Hechos (orden FK)
+3. **DWH → Views**: Presentación para SSAS/Power BI
 
-### FASE 2: Entrevista Técnica (2-3 horas)
+### Datos de Prueba
 
-- **Parte A:** Revisión de tu solución (60 min)
-- **Parte B:** Issue en vivo (60 min)
-- **Parte C:** Caso de producción (30 min)
+| Tabla | Registros | Descripción |
+|-------|-----------|-------------|
+| `erp_persona` | 20 | Estudiantes base (pidm 1-20) |
+| `erp_student_curriculum` | 10 | Matrículas válidas (10 estudiantes) |
+| `erp_term_catalog` | 6 | Términos académicos (202301-202402) |
+| `erp_student_scholarship` | 15 | **FK huérfanos** (id_estudiante > 99980) |
+| `erp_student_benefit` | 8 | **FK huérfanos** (id_estudiante > 99980) |
+| `erp_collection_history` | 12 | Cobranzas válidas (id_estudiante ≤ 20) |
+
+**Nota**: Los FK huérfanos son **intencionales** para simular issues de integridad referencial.
+
+### Herramientas Disponibles
+
+**Validators**:
+- `Tools/Test-Environment.ps1`: Valida setup completo (databases, schemas, volumetría)
+- `Tools/Validate-Solution.ps1`: Auto-grading de soluciones (scoring 100 pts)
+
+**Estándares**:
+- `Features/ESTANDARES_ARQUITECTURA_BD.md`: Patterns ETL, logging, naming conventions
+- `Features/ESTANDARES_NOMENCLATURA.md`: File prefixes, SQL headers, temporary files
+
+**Referencias**:
+- `ExtraccionBanner/`: Metodologías de extracción de Oracle Banner
+- `Features/Arquitectura_UFT_FIN_IntegracionMatriculaBeneficios/`: Arquitectura completa
 
 ---
 
-## 🛠️ Estado del Proyecto
+## ❓ FAQ
 
-🚧 **EN DESARROLLO** 🚧
+### ¿Puedo usar herramientas de IA (ChatGPT, Copilot)?
 
-### ✅ Completado
+**Sí**, se permite asistencia de IA, pero:
+- Debes **entender completamente** tu solución
+- En la technical interview se profundizará en decisiones de diseño
+- El código debe seguir los estándares del repositorio
 
-- [x] Estructura de carpetas
-- [x] .gitignore configurado
-- [x] README inicial
+### ¿Qué pasa si mi PR no activa el auto-grading?
 
-### 🔄 En Progreso
+Verifica el título del PR:
+```
+✅ Correcto: Solution - [JuanPerez] - Issue [001]
+❌ Incorrecto: Solution JuanPerez Issue 001
+❌ Incorrecto: Solution - JuanPerez - Issue 1 (debe ser 001)
+❌ Incorrecto: Solution - Juan Perez - Issue [001] (sin espacios en nombre)
+```
 
-- [ ] Scripts de creación de esquemas (Fase 1)
-- [ ] Generador de datos sintéticos (Fase 1)
-- [ ] Documentación de issues (Fase 2)
-- [ ] Scripts de validación (Fase 3)
-- [ ] Workflow CI/CD (Fase 4)
-- [ ] SETUP.md detallado (Fase 5)
+### ¿Puedo resolver múltiples issues?
+
+No se recomienda. Cada candidato recibe **1 issue asignado** según experiencia:
+- Junior: Issues 001-003
+- Mid-Level: Issues 003-005
+- Senior: Issues 005-007
+
+Resolver issues adicionales **no incrementa el score**.
+
+### ¿Qué hacer si obtengo < 70 puntos?
+
+1. Revisa el **comentario detallado** en tu PR
+2. Identifica qué checks fallaron
+3. Corrige los problemas
+4. Ejecuta `Validate-Solution.ps1` localmente
+5. Haz push de correcciones (el workflow se re-ejecuta automáticamente)
+
+**Límite**: 1 retry permitido (2 intentos totales).
+
+### ¿Necesito acceso a Oracle Banner?
+
+**No**. Los issues no requieren conexión real a Banner. Los datos de prueba simulan extracciones de Oracle ya materializadas en `SchoolERP_Source`.
+
+Para issues avanzados (006-007), se proporcionan:
+- Queries de extracción de referencia (`ExtraccionBanner/METODOLOGIA_*.md`)
+- Datos CSV de ejemplo
+- Metodología documentada
+
+### ¿Cómo debugging si mi SQL tiene errores?
+
+**Método 1 - SSMS**:
+```sql
+-- Copia tu script a SSMS
+-- Ejecuta línea por línea con F8
+-- Revisa mensajes en Output panel
+```
+
+**Método 2 - sqlcmd**:
+```powershell
+sqlcmd -S [SERVIDOR] -E -i "tu_script.sql" -o "OUTPUT_debug.txt"
+# Revisa OUTPUT_debug.txt para errores detallados
+```
+
+**Método 3 - Validator**:
+```powershell
+.\Tools\Validate-Solution.ps1 -Issue "001" -Candidate "Test" -DryRun
+# Muestra archivos pero no ejecuta queries (validación rápida)
+```
+
+### ¿Qué servidor SQL usar para GitHub Actions?
+
+**Automático**. El workflow usa:
+- `ankane/setup-sqlserver@v1` (SQL Server 2019 en Ubuntu runner)
+- Credenciales: `sa` / `YourStrong@Passw0rd` (hardcoded en workflow)
+- Databases creadas on-the-fly
+
+No necesitas configurar nada - el runner es efímero.
+
+### ¿Cuánto tarda el auto-grading?
+
+**Timeline**:
+- Parse PR title: ~10 segundos
+- Setup SQL Server: ~2 minutos
+- Load schemas/data: ~1 minuto
+- Run validator: ~2-3 minutos
+- Post comment: ~10 segundos
+
+**Total**: 5-8 minutos desde que creas el PR.
 
 ---
 
 ## 📞 Contacto
 
-Para consultas sobre el proceso de evaluación:
-- Email: bi-team@example.com
-- Issues: Usar el sistema de Issues de GitHub
+**Coordinador de Assessment**: Alvaro Hernandez  
+**Email**: alvaro.hernandez@uft.cl  
+**GitHub**: [@ahernandezGH](https://github.com/ahernandezGH)
+
+**Soporte técnico**:
+- Issues del repositorio: [Create Issue](https://github.com/ahernandezGH/bi-technical-assessment/issues)
+- Problemas con auto-grading: Tag `@ahernandezGH` en tu PR
 
 ---
 
 ## 📄 Licencia
 
-Este repositorio es material de evaluación técnica. Uso restringido.
+Este repositorio es privado y confidencial. Uso exclusivo para procesos de reclutamiento de Universidad Finis Terrae.
+
+**Prohibido**:
+- Compartir soluciones con otros candidatos
+- Publicar issues o soluciones en redes sociales
+- Hacer fork público del repositorio
+
+---
+
+**Good luck! 🚀**
 
 **Última actualización:** Diciembre 2025
