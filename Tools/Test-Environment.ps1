@@ -88,7 +88,8 @@ function Get-DatabaseExists {
     try {
         $query = "SELECT COUNT(*) FROM sys.databases WHERE name = '$Database'"
         $result = sqlcmd -S $Server -U $User -P $Pass -Q $query -h -1 -W 2>&1
-        return (([int]($result | Select-Object -Last 1)) -gt 0)
+        $count = [int]($result | Where-Object { $_ -match '^\d+$' } | Select-Object -First 1)
+        return ($count -gt 0)
     } catch {
         return $false
     }
@@ -100,7 +101,8 @@ function Get-SchemaExists {
     try {
         $query = "SELECT COUNT(*) FROM [$Database].sys.schemas WHERE name = '$Schema'"
         $result = sqlcmd -S $Server -U $User -P $Pass -Q $query -h -1 -W 2>&1
-        return (([int]($result | Select-Object -Last 1)) -gt 0)
+        $count = [int]($result | Where-Object { $_ -match '^\d+$' } | Select-Object -First 1)
+        return ($count -gt 0)
     } catch {
         return $false
     }
@@ -112,7 +114,8 @@ function Get-TableRowCount {
     try {
         $query = "SELECT COUNT(*) FROM [$Database].[$Schema].[$Table]"
         $result = sqlcmd -S $Server -U $User -P $Pass -Q $query -h -1 -W 2>&1
-        return [int]($result | Select-Object -Last 1)
+        $count = $result | Where-Object { $_ -match '^\d+$' } | Select-Object -First 1
+        if ($count) { return [int]$count } else { return -1 }
     } catch {
         return -1
     }
@@ -251,7 +254,7 @@ $totalChecks++
 try {
     $query = "SELECT COUNT(*) FROM BI_Assessment_DWH.mat.hechos_matricula WHERE id_estudiante > 99980"
     $result = sqlcmd -S $ServerName -U $Username -P $Password -Q $query -h -1 -W 2>&1
-    $huerfanos = [int]($result | Select-Object -Last 1)
+    $huerfanos = [int]($result | Where-Object { $_ -match '^\d+$' } | Select-Object -First 1)
     $checksOK += Write-Check "FK huérfanos (Issue 001)" ($huerfanos -eq 15) "$huerfanos registros (esperado: 15)"
 } catch {
     $checksOK += Write-Check "FK huérfanos (Issue 001)" $false "No se pudo verificar"
