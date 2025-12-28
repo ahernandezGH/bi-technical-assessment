@@ -11,7 +11,7 @@
 ### ✅ BASES DE DATOS CREADAS
 
 | Base de Datos | Estado | Descripción |
-|---------------|--------|-------------|
+| --------------- | -------- | ------------- |
 | **SchoolERP_Source** | ✅ Creada | Fuente ERP con tablas históricas |
 | **BI_Assessment_Staging** | ✅ Creada | Staging con esquemas: `stg`, `cat`, `mat`, `ben` |
 | **BI_Assessment_DWH** | ✅ Creada | Data Warehouse con dimensiones y hechos |
@@ -23,7 +23,7 @@
 ### SchoolERP_Source
 
 | Tabla | Registros | Descripción |
-|-------|-----------|-------------|
+| ------- | ----------- | ------------- |
 | **erp_person_identity** | 20 | Identidades de personas vigentes + históricas |
 | **erp_term_catalog** | 6 | Términos académicos (2024-2025) |
 | **erp_student_curriculum** | 10 | Curriculum estudiante con precedencia |
@@ -68,7 +68,7 @@ WHERE id_estudiante > 99980;
 ### Schema Creation (01_Schema/)
 
 | Archivo | Descripción |
-|---------|-------------|
+| --------- | ------------- |
 | `CREATE_SchoolERP_Source.sql` | Crea tablas ERP con índices |
 | `CREATE_BI_Assessment_Staging.sql` | Crea staging con esquemas y tablas |
 | `CREATE_BI_Assessment_DWH.sql` | Crea DWH con dimensiones y hechos |
@@ -76,7 +76,7 @@ WHERE id_estudiante > 99980;
 ### Data Loading (02_Data/)
 
 | Archivo | Descripción | Registros Cargados |
-|---------|-------------|-------------------|
+| --------- | ------------- | ------------------- |
 | `LOAD_Basic_TestData.sql` | Carga términos y personas | 26 |
 | `LOAD_Curriculum_Data.sql` | Carga curriculum estudiantes | 10 |
 | `INSERT_EdgeCases.sql` | Inserta FK huérfanos | 15 |
@@ -130,7 +130,7 @@ WHERE id_estudiante NOT IN (SELECT id_estudiante FROM BI_Assessment_DWH.cat.dim_
 
 ## 📈 ESTADÍSTICAS FINALES
 
-```
+```text
 Total Registros por Base:
 ├── SchoolERP_Source
 │   ├── erp_person_identity: 20
@@ -164,7 +164,7 @@ Total: 51 registros cargados
 
 - **Plan General:** [`PLAN_Implementacion_Repositorio_Evaluacion.md`](../../../PLAN_Implementacion_Repositorio_Evaluacion.md)
 - **Arquitectura:** [`DOC_Arquitectura_EvaluacionCandidatosBI.md`](../../../DOC_Arquitectura_EvaluacionCandidatosBI.md)
-- **Repositorio:** https://github.com/ahernandezGH/bi-technical-assessment
+- **Repositorio:** <https://github.com/ahernandezGH/bi-technical-assessment>
 - **Commits:**
   - Fase 0: `535259c` (Estructura base)
   - Fase 1: `78da58d`, `fb733ee` (Esquemas y datos)
