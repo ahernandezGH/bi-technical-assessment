@@ -11,6 +11,7 @@
 Implementar flujo ETL completo desde Source hasta DWH, integrando matrícula y beneficios con validaciones, auditoría y materialización.
 
 **Objetivo**:
+
 - ETL orchestrador de 5 pasos (Extract → Validate → Transform → Load → Refresh)
 - Validaciones en cada paso
 - Auditoría de ejecución
@@ -21,7 +22,7 @@ Implementar flujo ETL completo desde Source hasta DWH, integrando matrícula y b
 
 ## 📝 Archivos Requeridos
 
-```
+```text
 Solutions/[TuNombre]/Issue007/
 ├── ETL_01_ExtraccionSource.sql
 ├── ETL_02_ValidacionStagingIntegridad.sql
@@ -55,7 +56,7 @@ Solutions/[TuNombre]/Issue007/
 
 ## 📊 Expected Output
 
-```
+```text
 Inicio ETL: 2024-12-28 10:00:00
 ├─ [EXTRACT] Personas: 20 registros
 ├─ [EXTRACT] Matrículas: 10 registros

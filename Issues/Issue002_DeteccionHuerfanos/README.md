@@ -11,7 +11,8 @@
 
 Ampliar la validación del Issue 001 para detectar huérfanos en MÚLTIPLES tablas (mat.hechos_matricula, ben.hechos_beneficios, col.hechos_cobranzas) usando patrones avanzados.
 
-**Objetivo**: 
+**Objetivo**:
+
 - Crear view que unifique detección de FK huérfanos
 - Procedure que reporte por tabla + severidad
 - ValidationQuery que retorne 15 (cantidad esperada de huérfanos)
@@ -20,7 +21,7 @@ Ampliar la validación del Issue 001 para detectar huérfanos en MÚLTIPLES tabl
 
 ## 📝 Archivos Requeridos
 
-```
+```text
 Solutions/[TuNombre]/Issue002/
 ├── QA_DeteccionHuerfanosUnificada.sql
 ├── PROC_ReporteIntegridadPorTabla.sql
@@ -33,10 +34,12 @@ Solutions/[TuNombre]/Issue002/
 ## 🎯 Requisitos Técnicos
 
 ### Entrada
+
 - 3 databases: Source, Staging, DWH
 - 3 fact tables: mat.hechos_matricula (15 huérfanos), ben.hechos_beneficios (8), col.hechos_cobranzas (0)
 
 ### Salida
+
 - **QA**: Query que detecta huérfanos en todas las tablas con UNION
 - **PROC**: Procedure que retorna reporte por tabla + counts + severidad
 - **VIEW**: Vista que muestra huérfanos unificados (para otros reportes)

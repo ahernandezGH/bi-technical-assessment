@@ -15,7 +15,7 @@
 
 ---
 
-## 🏷️ Naming Conventions
+## Naming Conventions
 
 ### Databases
 
@@ -114,7 +114,7 @@
 
 ---
 
-## 🎨 Formatting
+## Formatting
 
 ### Case and Indentation
 
@@ -207,7 +207,7 @@ WITH cte_estudiantes AS (SELECT id_estudiante, nombre, estado FROM cat.dim_estud
 
 ---
 
-## 📝 Comments
+## Comments
 
 ### Header Comments
 
@@ -264,7 +264,7 @@ SELECT id_estudiante FROM cat.dim_estudiantes WHERE profile_completeness >= 0.80
 
 ---
 
-## ✅ Best Practices
+## Best Practices
 
 ### Use Aliases
 
@@ -353,7 +353,7 @@ INSERT INTO cat.dim_estudiantes VALUES (...)
 
 ---
 
-## ⚡ Performance Considerations
+## Performance Considerations
 
 ### Use Proper Indexes
 

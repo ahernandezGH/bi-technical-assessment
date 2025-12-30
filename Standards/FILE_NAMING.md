@@ -9,11 +9,12 @@
 
 All files follow a **Phase-Action-Domain** pattern to clearly identify their purpose and lifecycle stage.
 
-```
+```text
 [PHASE]_[ACTION]_[DOMAIN].sql
 ```
 
 Where:
+
 - **PHASE**: CREATE, ALTER, DROP, LOAD, QA, PROC, MERGE, REPORT, etc.
 - **ACTION**: Verb describing what the script does (optional)
 - **DOMAIN**: Table, procedure, or object affected
@@ -25,7 +26,7 @@ Where:
 
 ### 0️⃣ Schema Creation (DDL)
 
-```
+```text
 CREATE_[ObjectName].sql        -- Initial table/view/procedure creation
 ALTER_[ObjectName].sql         -- Schema modifications
 DROP_[ObjectName].sql          -- Schema deletion (RARELY USED)
@@ -38,7 +39,7 @@ Examples:
 
 ### 1️⃣ Data Loading (DML)
 
-```
+```text
 LOAD_[SourceName]_[TargetTable].sql   -- Insert/bulk load data
 MERGE_[SourceTarget].sql               -- MERGE INTO (update+insert)
 REFRESH_[ObjectName].sql               -- Refresh/reload existing data
@@ -52,7 +53,7 @@ Examples:
 
 ### 2️⃣ Quality Assurance (Testing)
 
-```
+```text
 QA_[ValidationName].sql        -- Validation/test queries
 TEST_[FeatureName].sql         -- Feature-level tests
 VALID_[DataQualityCheck].sql   -- Data quality validation
@@ -66,7 +67,7 @@ Examples:
 
 ### 3️⃣ Procedures and Functions
 
-```
+```text
 PROC_[ProcedureName].sql       -- CREATE PROCEDURE script
 FUNC_[FunctionName].sql        -- CREATE FUNCTION script
 
@@ -78,7 +79,7 @@ Examples:
 
 ### 4️⃣ Reporting and Views
 
-```
+```text
 REPORT_[ReportName].sql        -- Reporting queries/views
 VIEW_[ViewName].sql            -- CREATE VIEW scripts
 
@@ -90,7 +91,7 @@ Examples:
 
 ### 5️⃣ Temporary/Working Files
 
-```
+```text
 TEMP_[Description].sql         -- Temporary script (DELETE BEFORE SUBMITTING)
 WIP_[WorkInProgress].sql       -- Work in progress
 DRAFT_[Description].sql        -- Draft/experimental code
@@ -111,7 +112,7 @@ Examples:
 
 ### SchoolERP_Source
 
-```
+```text
 LOAD_Banner_Personas.sql              -- Extract from Oracle Banner
 LOAD_CSV_DatosHistoricos.sql          -- Load from CSV files
 EXTR_[BannerTable].sql                -- Extract scripts
@@ -119,7 +120,7 @@ EXTR_[BannerTable].sql                -- Extract scripts
 
 ### BI_Assessment_Staging
 
-```
+```text
 LOAD_Source_Staging_Personas.sql      -- Source → Staging ETL
 PROC_SincronizarPersonas.sql          -- Sync procedures
 QA_ValidarIntegridadStaging.sql       -- Staging validation
@@ -128,7 +129,7 @@ MERGE_Staging_Staging.sql             -- Staging refresh
 
 ### BI_Assessment_DWH
 
-```
+```text
 LOAD_Staging_DWH_Personas.sql         -- Staging → DWH ETL
 CREATE_DIM_Estudiantes.sql            -- Dimension creation
 CREATE_FACT_Matricula.sql             -- Fact table creation
@@ -142,7 +143,7 @@ REPORT_MatriculaConsolidado.sql       -- DWH reporting views
 
 ### Issue 001 - Validación Integridad
 
-```
+```text
 Solutions/JuanPerez/Issue001/
 ├── QA_ValidarIntegridadEstudiantes.sql    ✓ Correct
 ├── PROC_ValidarIntegridadPreInsert.sql    ✓ Correct
@@ -153,7 +154,7 @@ Solutions/JuanPerez/Issue001/
 
 ### Issue 003 - Sincronización Catálogos
 
-```
+```text
 Solutions/MariaPérez/Issue003/
 ├── PROC_SincronizarDimensionPersonas.sql
 ├── QA_ValidarSincronizacion.sql
@@ -165,7 +166,7 @@ Solutions/MariaPérez/Issue003/
 
 ### Issue 007 - Integración Completa
 
-```
+```text
 Solutions/PedroRodriguez/Issue007/
 ├── ETL_01_ExtraccionSource.sql
 ├── ETL_02_ValidacionStagingIntegridad.sql
@@ -290,7 +291,7 @@ Before submitting:
 
 ## 🚫 Examples of BAD Naming
 
-```
+```text
 ❌ script.sql                    (too vague)
 ❌ Validate Integrity.sql        (spaces, unclear)
 ❌ script_v1_FINAL_backup.sql    (multiple versions)
@@ -302,7 +303,7 @@ Before submitting:
 
 ## ✅ Examples of GOOD Naming
 
-```
+```text
 ✅ QA_ValidarIntegridadEstudiantes.sql
 ✅ PROC_SincronizarDimensionPersonas.sql
 ✅ CREATE_DIM_Estudiantes.sql

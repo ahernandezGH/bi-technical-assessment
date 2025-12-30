@@ -16,7 +16,8 @@ All candidates use a **Fork + PR workflow** to submit solutions. This guide expl
 ### 1. Fork Repository (One-time setup)
 
 **In GitHub UI**:
-1. Navigate to https://github.com/ahernandezGH/bi-technical-assessment
+
+1. Navigate to <https://github.com/ahernandezGH/bi-technical-assessment>
 2. Click "Fork" button (top right)
 3. Select "Create a new fork"
 4. Click "Create fork"
@@ -50,11 +51,13 @@ git remote -v
 ### 4. Create Working Branch
 
 **Branch naming pattern**:
-```
+
+```text
 solution-[candidate]-issue[00X]
 ```
 
 **Examples**:
+
 ```bash
 git checkout -b solution-juanperez-issue001
 git checkout -b solution-mariagarcia-issue003
@@ -62,6 +65,7 @@ git checkout -b solution-pedro_rodriguez-issue007
 ```
 
 **Guidelines**:
+
 - Use lowercase
 - Replace spaces with hyphens or underscores
 - No special characters except hyphens/underscores
@@ -98,19 +102,24 @@ git push origin solution-juanperez-issue001
 ### 7. Create Pull Request
 
 **In GitHub UI**:
+
 1. Go to YOUR fork
 2. Click "Compare & pull request" button
 3. **CRITICAL**: Set PR title to exactly:
-   ```
+
+   ```text
    Solution - [YourName] - Issue [001]
    ```
+
 4. In description, add (optional):
+
    ```markdown
    ## Solution Overview
    - Approach: [Brief explanation]
    - Time spent: ~4 hours
    - Notes: [Any implementation notes]
    ```
+
 5. Click "Create pull request"
 
 **⚠️ IMPORTANT**: PR title triggers auto-grading workflow!
@@ -118,6 +127,7 @@ git push origin solution-juanperez-issue001
 ### 8. Monitor Auto-Grading
 
 **In your PR**:
+
 1. Click "Actions" tab or scroll down to "Checks"
 2. Watch "Validate Solution" workflow run
 3. Wait for comment with score
@@ -127,6 +137,7 @@ git push origin solution-juanperez-issue001
 ### 9. Fix and Resubmit (if needed)
 
 If score < 70:
+
 ```bash
 # Make corrections
 # Edit scripts to fix syntax/docs errors
@@ -150,11 +161,12 @@ git push origin solution-juanperez-issue001
 
 ### Pattern
 
-```
+```text
 [TYPE]: [DESCRIPTION]
 ```
 
 Where TYPE is one of:
+
 - `feat` - New feature/solution
 - `fix` - Bug fix or correction
 - `docs` - Documentation only
@@ -181,7 +193,7 @@ git commit -m "test: Validate output with 15 expected orphans"
 - Max 72 characters for first line
 - Optional: Detailed description below blank line
 
-```
+```text
 feat: Add SQL validation procedure
 
 This adds a new procedure to validate referential integrity
@@ -290,11 +302,13 @@ Before pushing:
 ### Issue: "GitHub Actions not triggered"
 
 **Causes**:
+
 1. PR title doesn't match pattern
 2. Merge conflict exists
 3. Auto-grade disabled
 
 **Fix**:
+
 ```bash
 # Check PR title in GitHub UI
 # Format should be: Solution - [Name] - Issue [001]
@@ -305,7 +319,9 @@ Before pushing:
 ### Issue: "Validation keeps failing"
 
 **Steps**:
+
 1. Run validator locally
+
    ```powershell
    .\Tools\Validate-Solution.ps1 -Issue "001" -Candidate "JuanPerez"
    ```
@@ -317,6 +333,7 @@ Before pushing:
 ### Issue: "Can't push to fork"
 
 **Check**:
+
 ```bash
 # Verify origin
 git remote -v

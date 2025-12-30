@@ -15,6 +15,7 @@ WHERE d.id_estudiante IS NULL  -- Solo los sin match (huérfanos)
 ```
 
 **Por qué LEFT JOIN en lugar de NOT IN**:
+
 - NOT IN falla si la subquery contiene NULL
 - LEFT JOIN + IS NULL es más legible y performante
 - Compatible con índices (execution plan mejor)
@@ -36,6 +37,7 @@ WHERE id_estudiante NOT IN (...)
 ```
 
 **En validator, el score depende de**:
+
 - Sintaxis SQL válida ✓
 - Retorna resultado (no importa cantidad de filas)
 - Incluye explicación en documentación
@@ -62,6 +64,7 @@ END
 ```
 
 **Notas**:
+
 - Use `SELECT 1` en NOT EXISTS (más rápido que `SELECT *`)
 - RAISERROR severidad 16 = error (detiene transaction)
 - RETURN values: 0=OK, 1=Error (convención)
@@ -114,7 +117,7 @@ SELECT
 
 ## 💡 Tip 6: Testing Manual antes de Submitter
 
-**Paso 1: Testear Query en SSMS**
+Paso 1: Testear Query en SSMS
 
 ```sql
 -- Copiar contenido de QA_ValidarIntegridadEstudiantes.sql
@@ -124,7 +127,7 @@ SELECT
 -- Verificar: Retorna datos sin errores
 ```
 
-**Paso 2: Testear Procedure en SSMS**
+Paso 2: Testear Procedure en SSMS
 
 ```sql
 -- Copiar contenido de PROC_ValidarIntegridadPreInsert.sql
@@ -138,7 +141,7 @@ EXEC mat.sp_ValidarIntegridadPreInsert @id_estudiante = 99999;
 -- Output: Error (id no existe)
 ```
 
-**Paso 3: Testear con Validator Local**
+Paso 3: Testear con Validator Local
 
 ```powershell
 .\Tools\Validate-Solution.ps1 -Issue "001" -Candidate "TuNombre"
@@ -180,9 +183,11 @@ RAISERROR detiene la transaction si ID no existe.
 ## Resultados
 [Paste salida de SSMS]
 ```
+
 Cantidad de huérfanos: 15
 Detalles: [tabla con IDs]
-```
+
+```text
 [Describe qué observaste]
 
 ## Conclusiones
@@ -195,7 +200,8 @@ Detalles: [tabla con IDs]
 
 ## 💡 Tip 8: Errores Comunes y Soluciones
 
-**Error 1: "Procedure already exists"**
+Error 1: "Procedure already exists"
+
 ```sql
 -- MALO:
 CREATE PROCEDURE [mat].[sp_ValidarIntegridadPreInsert] ...
@@ -207,7 +213,8 @@ IF OBJECT_ID('[mat].[sp_ValidarIntegridadPreInsert]') IS NOT NULL
 CREATE PROCEDURE [mat].[sp_ValidarIntegridadPreInsert] ...
 ```
 
-**Error 2: "Invalid column name 'id_estudiante'"**
+Error 2: "Invalid column name 'id_estudiante'"
+
 ```sql
 -- Verificar nombre exacto de columna:
 SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
@@ -217,7 +224,8 @@ WHERE TABLE_NAME = 'hechos_matricula';
 SELECT id_estudiante FROM mat.hechos_matricula;
 ```
 
-**Error 3: "RAISERROR" no reconocido**
+Error 3: "RAISERROR" no reconocido
+
 ```sql
 -- MALO: RAISE ERROR (dos palabras)
 -- CORRECTO: RAISERROR (una palabra)
@@ -262,6 +270,7 @@ Write-Host "Palabras: $wordCount"
 ```
 
 **Si < 150 palabras**:
+
 - Agregra más detalles en "Conclusiones"
 - Explica por qué elegiste LEFT JOIN vs NOT IN
 - Menciona edge cases (NULL values, performance)
@@ -304,7 +313,7 @@ Write-Host "Palabras: $wordCount"
    - Push
    - Crear PR con título exacto
 
-**Tiempo total: ~3 horas**
+Tiempo total: ~3 horas
 
 ---
 

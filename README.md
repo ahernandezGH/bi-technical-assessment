@@ -1,6 +1,6 @@
 # BI Technical Assessment
 
-**Universidad Finis Terrae - Business Intelligence Platform**
+Universidad Finis Terrae - Business Intelligence Platform
 
 Repositorio de evaluación técnica para candidatos a posiciones de BI Developer/Data Engineer.
 
@@ -17,15 +17,17 @@ Repositorio de evaluación técnica para candidatos a posiciones de BI Developer
 
 ---
 
-## 🎯 Descripción General
+## Descripción General
 
 Este assessment evalúa habilidades en:
+
 - **SQL Server**: T-SQL, stored procedures, integridad referencial
 - **ETL Patterns**: Staging → DWH → Views (arquitectura UFT_FIN)
 - **Data Quality**: Validación de datos, detección de inconsistencias
 - **Documentation**: Capacidad de explicar soluciones técnicas
 
 **Formato**:
+
 - 7 issues técnicos independientes
 - Cada candidato resuelve 1 issue asignado
 - Tiempo: 4-6 horas (sin límite estricto)
@@ -33,6 +35,7 @@ Este assessment evalúa habilidades en:
 - Scoring: 100 puntos (mínimo 70 para aprobar)
 
 **Proceso**:
+
 1. **Fork** este repositorio
 2. **Resolver** el issue asignado en `Solutions/[TuNombre]/Issue[00X]/`
 3. **Pull Request** con título: `Solution - [TuNombre] - Issue [00X]`
@@ -41,10 +44,10 @@ Este assessment evalúa habilidades en:
 
 ---
 
-## 📂 Catálogo de Issues
+## Catálogo de Issues
 
 | Issue | Título | Dificultad | Archivos | Puntos | Tiempo Est. |
-|-------|--------|------------|----------|--------|-------------|
+| ------- | -------- | ------------ | ---------- | -------- | ------------- |
 | [001](Issues/Issue001_ValidacionIntegridad/) | Validación de Integridad Referencial | ⭐⭐ | 2 SQL + 1 DOC | 70 | 4h |
 | [002](Issues/Issue002_DeteccionHuerfanos/) | Detección de Registros Huérfanos | ⭐⭐⭐ | 3 SQL + 1 DOC | 100 | 5h |
 | [003](Issues/Issue003_SincronizacionCatalogos/) | Sincronización de Catálogos | ⭐⭐⭐ | 2 SQL + 1 PS1 + 1 DOC | 75 | 5h |
@@ -54,13 +57,14 @@ Este assessment evalúa habilidades en:
 | [007](Issues/Issue007_IntegracionCompleta/) | Integración End-to-End (Matrícula + Beneficios) | ⭐⭐⭐⭐⭐ | 5 SQL + 1 PS1 + 1 DOC | 100 | 8h |
 
 **Leyenda**:
+
 - ⭐ = Básico (conocimientos SQL fundamentales)
 - ⭐⭐⭐ = Intermedio (procedures, CTEs, error handling)
 - ⭐⭐⭐⭐⭐ = Avanzado (ETL completo, PowerShell, cross-database)
 
 ---
 
-## 🚀 Quickstart para Candidatos
+## Quickstart para Candidatos
 
 ### 1. Fork y Clone
 
@@ -74,12 +78,14 @@ cd bi-technical-assessment
 ### 2. Setup del Entorno Local
 
 **Requisitos**:
+
 - SQL Server 2019+ (Developer/Express Edition)
 - SQL Server Management Studio (SSMS)
 - PowerShell 5.1+
 - Git 2.30+
 
 **Crear Databases**:
+
 ```powershell
 # Ejecutar desde raíz del repositorio
 cd Database\01_Schemas
@@ -93,6 +99,7 @@ sqlcmd -S [TU_SERVIDOR] -E -i LOAD_Basic_TestData.sql
 ```
 
 **Validar Entorno**:
+
 ```powershell
 .\Tools\Test-Environment.ps1 -ServerName "[TU_SERVIDOR]"
 # Debe mostrar: "ENTORNO LISTO PARA EVALUACION" (27/27 checks PASS)
@@ -101,7 +108,8 @@ sqlcmd -S [TU_SERVIDOR] -E -i LOAD_Basic_TestData.sql
 ### 3. Trabajar en tu Solución
 
 **Estructura de carpetas**:
-```
+
+```text
 Solutions/
   [TuNombre]/              # Ej: JuanPerez, MariaGomez
     Issue[00X]/            # Ej: Issue001, Issue002
@@ -111,7 +119,8 @@ Solutions/
 ```
 
 **Ejemplo Issue 001**:
-```
+
+```text
 Solutions/JuanPerez/Issue001/
   QA_ValidarIntegridadEstudiantes.sql
   PROC_ValidarIntegridadPreInsert.sql
@@ -119,6 +128,7 @@ Solutions/JuanPerez/Issue001/
 ```
 
 **SOLUTION.md** debe incluir (mínimo 150 palabras):
+
 - Análisis del problema
 - Metodología de solución
 - Explicación de cada script
@@ -155,14 +165,17 @@ git push origin main
 ```
 
 **⚠️ IMPORTANTE**: El título del PR **DEBE** seguir exactamente el formato:
-```
+
+```text
 Solution - [Candidate] - Issue [00X]
 ```
+
 De lo contrario, el auto-grading no se activará.
 
 ### 6. Auto-Grading
 
 GitHub Actions ejecutará automáticamente:
+
 1. Parse del título del PR
 2. Setup de SQL Server en runner
 3. Carga de schemas y test data
@@ -172,17 +185,18 @@ GitHub Actions ejecutará automáticamente:
 **Tiempo de ejecución**: ~5-8 minutos
 
 **Resultado**:
+
 - ✅ **PASS** (≥70 pts): Elegible para Phase 2 (Technical Interview)
 - ❌ **FAIL** (<70 pts): Review feedback, corrige, y resubmit (1 retry permitido)
 
 ---
 
-## 📊 Sistema de Scoring
+## Sistema de Scoring
 
 ### Distribución de Puntos (100 pts total)
 
 | Check | Descripción | Puntos | Criterio |
-|-------|-------------|--------|----------|
+| ------- | ------------- | -------- | ---------- |
 | **1. Archivos Requeridos** | Presencia de todos los archivos especificados | 25 | All-or-nothing |
 | **2. Sintaxis SQL** | Scripts ejecutables sin errores (SET PARSEONLY) | 25 | Proporcional (errores penalizan) |
 | **3. Documentación** | SOLUTION.md ≥ 150 palabras | 20 | Proporcional (word count) |
@@ -197,12 +211,14 @@ GitHub Actions ejecutará automáticamente:
 ### Ejemplos
 
 **Caso A - PASS (85 pts)**:
+
 - Archivos: ✓ 25/25 (todos presentes)
 - Sintaxis: ✓ 20/25 (1 warning menor)
 - Documentación: ✓ 20/20 (250 palabras)
 - Validación: ✓ 20/30 (resultado cercano, no exacto)
 
 **Caso B - FAIL (65 pts)**:
+
 - Archivos: ✓ 25/25
 - Sintaxis: ✗ 15/25 (2 errores de sintaxis)
 - Documentación: ✗ 10/20 (solo 80 palabras)
@@ -210,11 +226,11 @@ GitHub Actions ejecutará automáticamente:
 
 ---
 
-## 🛠️ Entorno de Desarrollo
+## Entorno de Desarrollo
 
 ### Arquitectura de 3 Capas
 
-```
+```text
 [SchoolERP_Source]          [BI_Assessment_Staging]      [BI_Assessment_DWH]
   └─ erp schema                └─ cat (catálogos)           └─ cat (dimensiones)
      ├─ erp_persona               ├─ mat (matrícula)           ├─ mat (hechos)
@@ -226,6 +242,7 @@ GitHub Actions ejecutará automáticamente:
 ```
 
 **Flujo ETL**:
+
 1. **Source → Staging**: Validación, transformación, limpieza
 2. **Staging → DWH**: Dimensiones → Hechos (orden FK)
 3. **DWH → Views**: Presentación para SSAS/Power BI
@@ -233,7 +250,7 @@ GitHub Actions ejecutará automáticamente:
 ### Datos de Prueba
 
 | Tabla | Registros | Descripción |
-|-------|-----------|-------------|
+| ------- | ----------- | ------------- |
 | `erp_persona` | 20 | Estudiantes base (pidm 1-20) |
 | `erp_student_curriculum` | 10 | Matrículas válidas (10 estudiantes) |
 | `erp_term_catalog` | 6 | Términos académicos (202301-202402) |
@@ -246,24 +263,28 @@ GitHub Actions ejecutará automáticamente:
 ### Herramientas Disponibles
 
 **Validators**:
+
 - `Tools/Test-Environment.ps1`: Valida setup completo (databases, schemas, volumetría)
 - `Tools/Validate-Solution.ps1`: Auto-grading de soluciones (scoring 100 pts)
 
 **Estándares**:
+
 - `Features/ESTANDARES_ARQUITECTURA_BD.md`: Patterns ETL, logging, naming conventions
 - `Features/ESTANDARES_NOMENCLATURA.md`: File prefixes, SQL headers, temporary files
 
 **Referencias**:
+
 - `ExtraccionBanner/`: Metodologías de extracción de Oracle Banner
 - `Features/Arquitectura_UFT_FIN_IntegracionMatriculaBeneficios/`: Arquitectura completa
 
 ---
 
-## ❓ FAQ
+## FAQ
 
 ### ¿Puedo usar herramientas de IA (ChatGPT, Copilot)?
 
 **Sí**, se permite asistencia de IA, pero:
+
 - Debes **entender completamente** tu solución
 - En la technical interview se profundizará en decisiones de diseño
 - El código debe seguir los estándares del repositorio
@@ -271,7 +292,8 @@ GitHub Actions ejecutará automáticamente:
 ### ¿Qué pasa si mi PR no activa el auto-grading?
 
 Verifica el título del PR:
-```
+
+```text
 ✅ Correcto: Solution - [JuanPerez] - Issue [001]
 ❌ Incorrecto: Solution JuanPerez Issue 001
 ❌ Incorrecto: Solution - JuanPerez - Issue 1 (debe ser 001)
@@ -281,6 +303,7 @@ Verifica el título del PR:
 ### ¿Puedo resolver múltiples issues?
 
 No se recomienda. Cada candidato recibe **1 issue asignado** según experiencia:
+
 - Junior: Issues 001-003
 - Mid-Level: Issues 003-005
 - Senior: Issues 005-007
@@ -302,6 +325,7 @@ Resolver issues adicionales **no incrementa el score**.
 **No**. Los issues no requieren conexión real a Banner. Los datos de prueba simulan extracciones de Oracle ya materializadas en `SchoolERP_Source`.
 
 Para issues avanzados (006-007), se proporcionan:
+
 - Queries de extracción de referencia (`ExtraccionBanner/METODOLOGIA_*.md`)
 - Datos CSV de ejemplo
 - Metodología documentada
@@ -309,6 +333,7 @@ Para issues avanzados (006-007), se proporcionan:
 ### ¿Cómo debugging si mi SQL tiene errores?
 
 **Método 1 - SSMS**:
+
 ```sql
 -- Copia tu script a SSMS
 -- Ejecuta línea por línea con F8
@@ -316,12 +341,14 @@ Para issues avanzados (006-007), se proporcionan:
 ```
 
 **Método 2 - sqlcmd**:
+
 ```powershell
 sqlcmd -S [SERVIDOR] -E -i "tu_script.sql" -o "OUTPUT_debug.txt"
 # Revisa OUTPUT_debug.txt para errores detallados
 ```
 
 **Método 3 - Validator**:
+
 ```powershell
 .\Tools\Validate-Solution.ps1 -Issue "001" -Candidate "Test" -DryRun
 # Muestra archivos pero no ejecuta queries (validación rápida)
@@ -330,6 +357,7 @@ sqlcmd -S [SERVIDOR] -E -i "tu_script.sql" -o "OUTPUT_debug.txt"
 ### ¿Qué servidor SQL usar para GitHub Actions?
 
 **Automático**. El workflow usa:
+
 - `ankane/setup-sqlserver@v1` (SQL Server 2019 en Ubuntu runner)
 - Credenciales: `sa` / `YourStrong@Passw0rd` (hardcoded en workflow)
 - Databases creadas on-the-fly
@@ -339,6 +367,7 @@ No necesitas configurar nada - el runner es efímero.
 ### ¿Cuánto tarda el auto-grading?
 
 **Timeline**:
+
 - Parse PR title: ~10 segundos
 - Setup SQL Server: ~2 minutos
 - Load schemas/data: ~1 minuto
@@ -352,10 +381,11 @@ No necesitas configurar nada - el runner es efímero.
 ## 📞 Contacto
 
 **Coordinador de Assessment**: Alvaro Hernandez  
-**Email**: alvaro.hernandez@uft.cl  
+**Email**: <alvaro.hernandez@uft.cl>  
 **GitHub**: [@ahernandezGH](https://github.com/ahernandezGH)
 
 **Soporte técnico**:
+
 - Issues del repositorio: [Create Issue](https://github.com/ahernandezGH/bi-technical-assessment/issues)
 - Problemas con auto-grading: Tag `@ahernandezGH` en tu PR
 
@@ -366,12 +396,13 @@ No necesitas configurar nada - el runner es efímero.
 Este repositorio es privado y confidencial. Uso exclusivo para procesos de reclutamiento de Universidad Finis Terrae.
 
 **Prohibido**:
+
 - Compartir soluciones con otros candidatos
 - Publicar issues o soluciones en redes sociales
 - Hacer fork público del repositorio
 
 ---
 
-**Good luck! 🚀**
+Good luck! 🚀
 
 **Última actualización:** Diciembre 2025

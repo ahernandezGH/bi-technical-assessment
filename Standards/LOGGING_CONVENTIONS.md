@@ -15,16 +15,18 @@
 
 ---
 
-## 🏗️ Logging Architecture
+## Logging Architecture
 
 ### Logging Table
 
 All ETL/sync processes must log to:
-```
+
+```text
 [BI_Assessment_Staging].dbo.registrar_log
 ```
 
 **Expected Columns**:
+
 ```sql
 CREATE TABLE dbo.registrar_log (
     id_ejecucion UNIQUEIDENTIFIER PRIMARY KEY,
@@ -44,7 +46,7 @@ CREATE TABLE dbo.registrar_log (
 
 ---
 
-## 🔧 Procedure Signature
+## Procedure Signature
 
 ### Standard Pattern
 
@@ -102,7 +104,7 @@ END
 
 ---
 
-## 💡 Implementation Pattern
+## Implementation Pattern
 
 ### Step 1: Initialize Execution Tracking
 
@@ -192,7 +194,7 @@ WHERE id_ejecucion = @id_ejecucion;
 
 ---
 
-## 📊 Query Validation and Reporting
+## Query Validation and Reporting
 
 ### Validate Execution Count
 
@@ -243,7 +245,7 @@ ORDER BY duracion_promedio DESC;
 
 ---
 
-## 📋 Examples
+## Examples
 
 ### Example 1: Simple ETL Procedure
 
