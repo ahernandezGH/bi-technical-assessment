@@ -6,7 +6,7 @@ Repositorio de evaluación técnica para candidatos a posiciones de BI Developer
 
 ---
 
-## � Índice
+## Índice
 
 - [Descripción General](#descripción-general)
 - [Catálogo de Issues](#catálogo-de-issues)
