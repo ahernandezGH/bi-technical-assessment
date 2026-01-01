@@ -15,7 +15,7 @@ https://github.com/ahernandezGH/bi-technical-assessment/pull/new/solution-testca
 
 2. **Busca el campo "Title"** y copia-pega esto EXACTAMENTE:
 ```
-Solution - TestCandidate - Issue [001]
+Solution - [TestCandidate] - Issue [001]
 ```
 
 ⚠️ **IMPORTANTE**: Debe ser EXACTO:
@@ -69,7 +69,7 @@ Cuando haya completado, crea archivo: `PHASE_5_4_RESULTS.md` con:
 # Phase 5.4 Test Results
 
 ## PR
-- Title: Solution - TestCandidate - Issue [001]
+- Title: Solution - [TestCandidate] - Issue [001]
 - Number: #XXX
 - URL: [link]
 
@@ -87,7 +87,7 @@ Cuando haya completado, crea archivo: `PHASE_5_4_RESULTS.md` con:
 ## ✅ CHECKLIST
 
 - [ ] Abriste el enlace PR
-- [ ] Copiaste título exacto: `Solution - TestCandidate - Issue [001]`
+- [ ] Copiaste título exacto: `Solution - [TestCandidate] - Issue [001]`
 - [ ] Hiciste click en "Create pull request"
 - [ ] Viste PR creado en GitHub
 - [ ] Abriste Actions tab para monitorear
@@ -101,7 +101,7 @@ Cuando haya completado, crea archivo: `PHASE_5_4_RESULTS.md` con:
 ## ❓ PROBLEMA?
 
 Si workflow NO se triggerizó:
-1. Verifica el título es EXACTO: `Solution - TestCandidate - Issue [001]`
+1. Verifica el título es EXACTO: `Solution - [TestCandidate] - Issue [001]`
 2. Cierra el PR
 3. Crea uno nuevo con título correcto
 

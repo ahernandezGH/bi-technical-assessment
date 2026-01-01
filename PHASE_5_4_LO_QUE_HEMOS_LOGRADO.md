@@ -167,13 +167,13 @@ He creado 5 documentos para ayudarte con los pasos restantes:
 Crear un PR en GitHub.com con estos datos:
 - **Rama**: `solution-testcandidate-issue001` (ya existe)
 - **Base**: `main`
-- **Título EXACTO**: `Solution - TestCandidate - Issue [001]`
+- **Título EXACTO**: `Solution - [TestCandidate] - Issue [001]`
 
 **Dos opciones**:
 
 **OPCIÓN A - Manual (Recomendado)**:
 1. Abre: https://github.com/ahernandezGH/bi-technical-assessment/pull/new/solution-testcandidate-issue001
-2. En "Title", pega: `Solution - TestCandidate - Issue [001]`
+2. En "Title", pega: `Solution - [TestCandidate] - Issue [001]`
 3. Click "Create pull request"
 
 **OPCIÓN B - Automático (con token)**:
@@ -233,7 +233,7 @@ Crea archivo: `PHASE_5_4_RESULTS.md` con:
 # Phase 5.4 - Test Results
 
 ## PR Details
-- Title: Solution - TestCandidate - Issue [001]
+- Title: Solution - [TestCandidate] - Issue [001]
 - Number: #XXX
 - URL: https://github.com/ahernandezGH/bi-technical-assessment/pull/XXX
 
@@ -276,7 +276,7 @@ Crea archivo: `PHASE_5_4_RESULTS.md` con:
 ```
 1. Lee PASO_6_SIMPLE_INSTRUCTIONS.txt (rápido)
 2. Abre https://github.com/ahernandezGH/bi-technical-assessment/pull/new/solution-testcandidate-issue001
-3. Copia título exacto en "Title": Solution - TestCandidate - Issue [001]
+3. Copia título exacto en "Title": Solution - [TestCandidate] - Issue [001]
 4. Click "Create pull request"
 ```
 
@@ -293,7 +293,7 @@ Crea archivo: `PHASE_5_4_RESULTS.md` con:
 ## ❓ PREGUNTAS FRECUENTES
 
 **P: ¿Qué pasa si el workflow no se triggerizó?**  
-R: El título probablemente no matchea el regex. Verifica que sea EXACTO: `Solution - TestCandidate - Issue [001]`
+R: El título probablemente no matchea el regex. Verifica que sea EXACTO: `Solution - [TestCandidate] - Issue [001]`
 
 **P: ¿Cuánto tiempo toma el workflow?**  
 R: 5-8 minutos típicamente. Es normal esperar.
