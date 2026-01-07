@@ -65,17 +65,20 @@ jobs:
         shell: pwsh
       
       - name: Setup SQL Server
-        uses: ankane/setup-sqlserver@v1
-        with:
-          accept-eula: true
-      
+        run: |
+          Write-Host "Starting SQL Server LocalDB..."
+          sqllocaldb create MSSQLLocalDB
+          sqllocaldb start MSSQLLocalDB
+          sqllocaldb info MSSQLLocalDB
+          Write-Host "SQL Server LocalDB ready"
+        shell: pwsh
+
       - name: Create Test Databases
         run: |
           Write-Host "Creating test databases..."
-          sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'SchoolERP_Source') CREATE DATABASE SchoolERP_Source;"
-          sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'BI_Assessment_Staging') CREATE DATABASE BI_Assessment_Staging;"
-          sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'BI_Assessment_DWH') CREATE DATABASE BI_Assessment_DWH;"
-          Write-Host "Databases created"
+          sqlcmd -S "(localdb)\MSSQLLocalDB" -E -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'BI_Assessment_Source') CREATE DATABASE [BI_Assessment_Source];"
+          sqlcmd -S "(localdb)\MSSQLLocalDB" -E -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'BI_Assessment_Staging') CREATE DATABASE [BI_Assessment_Staging];"      
+          sqlcmd -S "(localdb)\MSSQLLocalDB" -E -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'BI_Assessment_DWH') CREATE DATABASE [BI_Assessment_DWH];"
         shell: pwsh
       
       - name: Load Test Schemas and Data
@@ -83,13 +86,13 @@ jobs:
           Write-Host "Loading schemas..."
           Get-ChildItem "Database\01_Schemas" -Filter "*.sql" | Sort-Object Name | ForEach-Object {
             Write-Host "Executing: $($_.Name)"
-            sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -i $_.FullName
+            sqlcmd -S "(localdb)\MSSQLLocalDB" -E -i $_.FullName
           }
-          
+
           Write-Host "Loading test data..."
           Get-ChildItem "Database\02_Data" -Filter "*.sql" | Sort-Object Name | ForEach-Object {
             Write-Host "Executing: $($_.Name)"
-            sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -i $_.FullName
+            sqlcmd -S "(localdb)\MSSQLLocalDB" -E -i $_.FullName
           }
           Write-Host "Environment setup complete"
         shell: pwsh
