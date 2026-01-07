@@ -84,7 +84,7 @@ jobs:
       - name: Load Test Schemas and Data
         run: |
           Write-Host "Loading schemas..."
-          Get-ChildItem "Database\01_Schemas" -Filter "*.sql" | Sort-Object Name | ForEach-Object {
+          Get-ChildItem "Database\01_Schema" -Filter "*.sql" | Sort-Object Name | ForEach-Object {
             Write-Host "Executing: $($_.Name)"
             sqlcmd -S "(localdb)\MSSQLLocalDB" -E -i $_.FullName
           }
