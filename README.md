@@ -1,6 +1,6 @@
 # BI Technical Assessment
 
-Universidad Finis Terrae - Business Intelligence Platform
+Universidad Hemisferio Sur Latinoamerica - Business Intelligence Platform
 
 Repositorio de evaluación técnica para candidatos a posiciones de BI Developer/Data Engineer.
 
@@ -330,7 +330,7 @@ Para issues avanzados (006-007), se proporcionan:
 - Datos CSV de ejemplo
 - Metodología documentada
 
-### ¿Cómo debugging si mi SQL tiene errores?
+### ¿Cómo depuro si mi SQL tiene errores?
 
 **Método 1 - SSMS**:
 
@@ -380,8 +380,8 @@ No necesitas configurar nada - el runner es efímero.
 
 ## 📞 Contacto
 
-**Coordinador de Assessment**: Alvaro Hernandez  
-**Email**: <alvaro.hernandez@uft.cl>  
+**Coordinador de Assessment**: Alejandro Hernández 
+**Email**: <ahernandez@hashware.com>  
 **GitHub**: [@ahernandezGH](https://github.com/ahernandezGH)
 
 **Soporte técnico**:
@@ -393,7 +393,7 @@ No necesitas configurar nada - el runner es efímero.
 
 ## 📄 Licencia
 
-Este repositorio es privado y confidencial. Uso exclusivo para procesos de reclutamiento de Universidad Finis Terrae.
+Este repositorio es privado y confidencial. Uso exclusivo para procesos de selección de Hashware de México S.A de C.V.
 
 **Prohibido**:
 
