@@ -682,11 +682,27 @@ git fetch upstream
    - Documentation (SOLUTION.md)
    - Supporting files
 
-3. **Optional: Validate locally** (if you have SQL Server setup):
+3. **Validate locally BEFORE submitting PR**:
    ```powershell
-   # Run test suite locally before submitting
-   # (Local validation script coming in Phase 6)
+   # Run local validator - use EXACT same validation as GitHub
+   .\Test-Solution-Local.ps1 -Candidate "YourName" -Issue "001"
+   
+   # Output example:
+   # [OK] Solution folder found
+   # [OK] Found: SOLUTION.md
+   # [OK] SOLUTION.md has 288 words (minimum: 50)
+   # ✓ PASS
+   # Score: 75/100
+   # "You are eligible for Phase 2 (Technical Interview)"
    ```
+
+   **IMPORTANT**: This local validation is 100% identical to what GitHub Actions will run. If it passes locally, it will pass on GitHub.
+
+4. **If local validation fails**:
+   - Add more content to SOLUTION.md (minimum 50 words)
+   - Check that all required files exist
+   - Run the validator again
+   - Repeat until you see ✓ PASS
 
 ### Step 4: Commit & Push to Your Fork
 
@@ -773,6 +789,37 @@ Your PR will trigger the workflow:
 5. If **FAIL (<70 points)**:
    - Candidate can resubmit once (1 retry allowed)
    - Evaluator waits for new PR
+
+### Step 8: Notifications (Email & GitHub)
+
+#### How you're notified (Candidate):
+
+1. **Local validation** (before PR):
+   - Run `Test-Solution-Local.ps1` anytime to check your score
+
+2. **GitHub notifications** (after PR):
+   - GitHub sends you notification when workflow completes
+   - Check your PR for the **github-actions[bot]** comment with results
+
+3. **Optional: GitHub email settings**:
+   - Go to https://github.com/settings/notifications
+   - Enable "Email notifications" for "Pull request reviews"
+   - You'll get email when your PR is reviewed
+
+#### How evaluator is notified:
+
+1. **GitHub PR tab**:
+   - Evaluator sees all PRs on the main repo
+   - Each PR has the auto-comment with score/status
+
+2. **GitHub notifications**:
+   - Evaluator can enable notifications for this repository
+   - Will get alerts when new PRs are created or commented
+
+3. **Optional: Custom email setup** (for administrators):
+   - If you want to send emails outside GitHub:
+   - Configure repository webhook to trigger email service
+   - (This can be set up in Phase 6+ if needed)
 
 ### Quick Reference: PR Title Format
 
