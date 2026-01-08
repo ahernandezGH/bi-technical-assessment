@@ -380,7 +380,7 @@ No necesitas configurar nada - el runner es efímero.
 
 ## 📞 Contacto
 
-**Coordinador de Assessment**: Alejandro Hernández 
+**Coordinador de Assessment**: Alejandro Hernández
 **Email**: <ahernandez@hashware.com>  
 **GitHub**: [@ahernandezGH](https://github.com/ahernandezGH)
 

@@ -9,7 +9,7 @@
 
 El PR creado con título `Solution - TestCandidate - Issue [001]` falló en GitHub Actions con este error:
 
-```
+```text
 ERROR: PR title does not match expected format
 Expected: 'Solution - [Candidate] - Issue [00X]'
 Got: 'Solution - TestCandidate - Issue [001]'
@@ -21,15 +21,17 @@ Got: 'Solution - TestCandidate - Issue [001]'
 
 El **nombre del candidato TAMBIÉN debe ir entre corchetes**.
 
-### ❌ FORMATO INCORRECTO:
-```
+### ❌ FORMATO INCORRECTO
+
+```text
 Solution - TestCandidate - Issue [001]
            ↑↑↑↑↑↑↑↑↑↑↑↑↑
            SIN corchetes
 ```
 
-### ✅ FORMATO CORRECTO:
-```
+### ✅ FORMATO CORRECTO
+
+```text
 Solution - [TestCandidate] - Issue [001]
            ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
            CON corchetes
@@ -46,12 +48,13 @@ El workflow de GitHub Actions espera este regex:
 ```
 
 **Desglose**:
-- `^Solution - ` - Literal "Solution - " (con espacio final)
+
+- `^Solution -` - Literal "Solution - " (con espacio final)
 - `\[` - Corchete abierto literal `[`
 - `.+` - Uno o más caracteres (nombre del candidato)
 - `\]` - Corchete cerrado literal `]`
 - ` - ` - Literal " - " (espacios antes y después)
-- `Issue ` - Literal "Issue " (con espacio)
+- `Issue` - Literal "Issue " (con espacio)
 - `\[` - Corchete abierto literal `[`
 - `\d{3}` - Exactamente 3 dígitos (número de issue)
 - `\]` - Corchete cerrado literal `]`
@@ -61,7 +64,7 @@ El workflow de GitHub Actions espera este regex:
 
 ## 📝 EJEMPLOS VÁLIDOS
 
-```
+```text
 ✅ Solution - [TestCandidate] - Issue [001]
 ✅ Solution - [Juan Perez] - Issue [002]
 ✅ Solution - [María López] - Issue [003]
@@ -70,7 +73,7 @@ El workflow de GitHub Actions espera este regex:
 
 ## ❌ EJEMPLOS INVÁLIDOS
 
-```
+```text
 ❌ Solution - TestCandidate - Issue [001]      (Sin corchetes en nombre)
 ❌ Solution to Issue 001                        (Formato completamente diferente)
 ❌ Solution - [TestCandidate] - Issue 001       (Sin corchetes en número)
@@ -108,12 +111,14 @@ GitHub no permite editar el título de un PR después de crearlo. Debes cerrar e
 ### Paso 2: Crear Nuevo PR con Título Correcto
 
 1. **Abre este enlace**:
-   ```
+
+   ```text
    https://github.com/ahernandezGH/bi-technical-assessment/pull/new/solution-testcandidate-issue001
    ```
 
 2. **En el campo "Title", copia y pega EXACTAMENTE**:
-   ```
+
+   ```text
    Solution - [TestCandidate] - Issue [001]
    ```
 
@@ -127,13 +132,14 @@ GitHub no permite editar el título de un PR después de crearlo. Debes cerrar e
 
 ### Paso 3: Monitorear Workflow
 
-- **URL**: https://github.com/ahernandezGH/bi-technical-assessment/actions
+- **URL**: <https://github.com/ahernandezGH/bi-technical-assessment/actions>
 - **Tiempo**: 5-8 minutos
 - **Resultado esperado**: ✅ Workflow completa exitosamente
 
 ### Paso 4: Verificar Auto-Comment
 
 Después de que el workflow complete, regresa a tu PR y verás un comentario automático con:
+
 - Score: 70-75/100 (esperado)
 - Status: ✅ PASS
 - Detalles de validación
@@ -142,7 +148,7 @@ Después de que el workflow complete, regresa a tu PR y verás un comentario aut
 
 ## 📊 COMPARACIÓN VISUAL
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                                                               │
 │  ❌ ANTES (Incorrecto):                                      │
@@ -168,7 +174,7 @@ Después de que el workflow complete, regresa a tu PR y verás un comentario aut
 
 Usa este checklist:
 
-- [ ] El título empieza con `Solution - ` (con espacio final)
+- [ ] El título empieza con `Solution -` (con espacio final)
 - [ ] El nombre del candidato está entre corchetes: `[TestCandidate]`
 - [ ] Hay espacios antes y después de los guiones: ` - `
 - [ ] La palabra `Issue` está seguida de un espacio
@@ -181,7 +187,7 @@ Usa este checklist:
 
 ## 📚 REFERENCIA RÁPIDA
 
-```
+```text
 Formato: Solution - [Nombre] - Issue [00X]
          ↑       ↑  ↑     ↑  ↑     ↑ ↑  ↑
          │       │  │     │  │     │ │  └─ Corchete cerrado
