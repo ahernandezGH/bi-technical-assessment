@@ -22,17 +22,7 @@
     Example: "001"
     
 .EXAMPLE
-    # Test your solution before submitting
     .\Test-Solution-Local.ps1 -Candidate "JuanPerez" -Issue "001"
-    
-    # Output will show:
-    # ✓ Solution folder found: Solutions/JuanPerez/Issue001
-    # ✓ Required files check...
-    # ✓ SOLUTION.md word count: 288 words (min 50) - PASS
-    # Score: 75/100
-    # Status: PASS
-    # 
-    # This is the EXACT same evaluation that will run on GitHub when you create the PR
     
 .NOTES
     When you submit your PR, use this title format (EXACT):
@@ -173,7 +163,7 @@ Write-Host ("=" * 60) -ForegroundColor $ColorHeader
 Write-Host ""
 
 Write-Host "Status:" -ForegroundColor White
-Write-Host "  ✓ PASS" -ForegroundColor $ColorSuccess
+Write-Host "  [PASS]" -ForegroundColor $ColorSuccess
 
 Write-Host ""
 Write-Host "Score:" -ForegroundColor White
@@ -181,7 +171,7 @@ Write-Host "  $score/$maxScore" -ForegroundColor $ColorSuccess
 
 Write-Host ""
 Write-Host "Feedback:" -ForegroundColor White
-Write-Host "  Your solution meets the minimum requirements (≥70 points)." -ForegroundColor $ColorSuccess
+Write-Host "  Your solution meets the minimum requirements (>= 70 points)." -ForegroundColor $ColorSuccess
 Write-Host "  You are eligible for Phase 2 (Technical Interview)." -ForegroundColor $ColorSuccess
 
 Write-Host ""
@@ -211,8 +201,8 @@ Write-Host "   - Post a comment with your score and feedback" -ForegroundColor "
 Write-Host "   - The results will be IDENTICAL to this local validation" -ForegroundColor "Gray"
 Write-Host ""
 
-Write-Host "4. If PASS (≥70): Evaluator will schedule your interview" -ForegroundColor $ColorSuccess
-Write-Host "5. If FAIL (<70):  You can resubmit once (1 retry allowed)" -ForegroundColor $ColorWarning
+Write-Host "4. If PASS (>= 70): Evaluator will schedule your interview" -ForegroundColor $ColorSuccess
+Write-Host "5. If FAIL (less 70): You can resubmit once - 1 retry allowed" -ForegroundColor $ColorWarning
 Write-Host ""
 
 Write-Host ("=" * 60) -ForegroundColor White
@@ -222,7 +212,7 @@ Write-Host ("=" * 60) -ForegroundColor White
 # ============================================================
 
 Write-Host ""
-Write-Host "📄 Validation output saved to: local-validation-output.txt" -ForegroundColor $ColorHeader
+Write-Host "[INFO] Validation output saved to: local-validation-output.txt" -ForegroundColor $ColorHeader
 Write-Host ""
 
 exit 0
