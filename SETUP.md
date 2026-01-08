@@ -648,7 +648,143 @@ MODIFY FILE (
 
 ---
 
-## 📞 Soporte
+## � Candidate Submission Workflow (Fork & PR)
+
+This section is for **candidates submitting solutions**, not local developers.
+
+### Step 1: Fork the Repository
+
+1. Go to: https://github.com/ahernandezGH/bi-technical-assessment
+2. Click **Fork** (top right)
+3. Your fork URL: `https://github.com/YOUR-GITHUB-USERNAME/bi-technical-assessment`
+
+### Step 2: Clone Your Fork Locally
+
+```powershell
+# Clone your fork
+git clone https://github.com/YOUR-GITHUB-USERNAME/bi-technical-assessment.git
+cd bi-technical-assessment
+
+# Configure upstream (to stay synced with original)
+git remote add upstream https://github.com/ahernandezGH/bi-technical-assessment.git
+git fetch upstream
+```
+
+### Step 3: Solve Your Issue Locally
+
+1. Create solution folder:
+   ```powershell
+   mkdir -p "Solutions\YourName\Issue00X"
+   ```
+
+2. Copy required files (see `Issues/` for your issue):
+   - SQL queries
+   - Documentation (SOLUTION.md)
+   - Supporting files
+
+3. **Optional: Validate locally** (if you have SQL Server setup):
+   ```powershell
+   # Run test suite locally before submitting
+   # (Local validation script coming in Phase 6)
+   ```
+
+### Step 4: Commit & Push to Your Fork
+
+```powershell
+# Commit your solution
+git add Solutions/
+git commit -m "solution: Issue [00X] - Your description"
+
+# Push to YOUR fork (not the original repo)
+git push origin main
+```
+
+### Step 5: Create a Pull Request (PR)
+
+1. Go to YOUR fork: `github.com/YOUR-USERNAME/bi-technical-assessment`
+2. Click **Pull Requests** → **New Pull Request**
+3. **IMPORTANT**: Set base repo to original:
+   - Base: `ahernandezGH/bi-technical-assessment` (main)
+   - Head: `YOUR-USERNAME/bi-technical-assessment` (main)
+4. **PR Title** (EXACT format required):
+   ```
+   Solution - [YourName] - Issue [00X]
+   ```
+   Examples:
+   - `Solution - [JuanPerez] - Issue [001]`
+   - `Solution - [MariaGarcia] - Issue [003]`
+
+5. Click **Create Pull Request**
+
+### Step 6: GitHub Actions Validates Automatically
+
+Your PR will trigger the workflow:
+
+```
+┌─────────────────────────────────────────┐
+│ GitHub Actions triggers automatically   │
+│ (no manual action needed)                │
+└─────────────────────────────────────────┘
+         ↓
+┌─────────────────────────────────────────┐
+│ 1. Parse PR Title                       │
+│    Extract candidate name & issue       │
+│    Validate regex format                │
+└─────────────────────────────────────────┘
+         ↓
+┌─────────────────────────────────────────┐
+│ 2. Validate Solution                    │
+│    - Check SOLUTION.md exists           │
+│    - Count words (min 50)               │
+│    - Check required SQL files           │
+│    - Assign score (0–100)               │
+└─────────────────────────────────────────┘
+         ↓
+┌─────────────────────────────────────────┐
+│ 3. Post Auto-Comment with Results:      │
+│    ✅ PASS (Score: 75/100)              │
+│    or                                   │
+│    ❌ FAIL (Score: 45/100)              │
+│                                         │
+│    "Congratulations! You are eligible   │
+│     for Phase 2 (Technical Interview)"  │
+│    or                                   │
+│    "Please review feedback and resubmit │
+│     (1 retry allowed)"                  │
+└─────────────────────────────────────────┘
+```
+
+### Step 7: How the Evaluator Sees Results
+
+**Evaluator's view:**
+
+1. Logs into GitHub: https://github.com/ahernandezGH/bi-technical-assessment/pulls
+2. Clicks on candidate's PR
+3. Scrolls to **github-actions[bot] comment** with:
+   - Score (X/100)
+   - Status (PASS/FAIL)
+   - Full validation output
+   - Feedback message
+
+4. If **PASS (≥70 points)**:
+   - Candidate is eligible for Phase 2 (Technical Interview)
+   - Evaluator schedules interview
+
+5. If **FAIL (<70 points)**:
+   - Candidate can resubmit once (1 retry allowed)
+   - Evaluator waits for new PR
+
+### Quick Reference: PR Title Format
+
+| Valid ✅ | Invalid ❌ |
+|----------|-----------|
+| `Solution - [JuanPerez] - Issue [001]` | `Solution - JuanPerez - Issue [001]` (missing brackets) |
+| `Solution - [Maria] - Issue [003]` | `Solution - Maria - Issue 003` (no issue brackets) |
+| `Solution - [Alex123] - Issue [007]` | `Solution - [Alex123] - Issue 7` (00X format required) |
+
+---
+
+## �📞 Soporte
 
 Si encuentras problemas durante setup:
 

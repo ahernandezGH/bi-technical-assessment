@@ -206,6 +206,42 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 
 ---
 
+## Candidate Submission & Evaluation Flow
+
+### For Candidates
+```
+1. Fork repo (GitHub UI)
+   ↓
+2. Clone fork locally
+   ↓
+3. Solve issue (create Solutions/Name/IssueXXX/)
+   ↓
+4. Commit & push to YOUR fork
+   ↓
+5. Create PR with title: "Solution - [Name] - Issue [00X]"
+   ↓
+6. Wait for GitHub Actions (auto-triggered, 3-5 min)
+```
+
+### For Evaluators
+```
+1. Go to Pull Requests tab on original repo
+   ↓
+2. Click candidate's PR
+   ↓
+3. View github-actions[bot] comment:
+      - Score: X/100
+      - Status: PASS (≥70) or FAIL (<70)
+      - Full validation output
+   ↓
+4. If PASS: Eligible for Phase 2 interview
+   If FAIL: Candidate can retry once (1 allowed)
+```
+
+**No manual validation needed** — GitHub Actions handles everything automatically via the workflow.
+
+---
+
 ## Next Steps (Phase 6+)
 
 1. **Onboard Candidates**
