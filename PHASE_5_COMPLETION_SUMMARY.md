@@ -9,6 +9,7 @@
 ## Executive Overview
 
 Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipeline** for automated candidate solution validation. The platform is now ready for:
+
 - Candidate submissions via GitHub PRs with title `Solution - [Name] - Issue [00X]`
 - Automated validation and scoring (0–100 points)
 - Real-time feedback comments on each PR
@@ -19,9 +20,11 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 ## Phase 5 Breakdown
 
 ### Phase 5.1: Installation & Setup Guide  
+
 **Deliverable:** [SETUP.md](./SETUP.md)  
 **Lines:** 2,847  
 **Content:**
+
 - Windows, macOS, Linux installation instructions
 - Git, SQL Server LocalDB, Node.js setup
 - Database initialization (BI_Assessment_Source/Staging/DWH)
@@ -33,9 +36,11 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 ---
 
 ### Phase 5.2: Issue Specifications (001–007)  
+
 **Deliverables:** [Issues/](./Issues/) directory  
 **Total Lines:** 2,036+ across 7 issues  
 **Content per issue:**
+
 - Clear business requirements & context
 - Acceptance criteria checklist
 - SQL/PowerShell hints
@@ -43,6 +48,7 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 - File structure templates
 
 **Completed Issues:**
+
 - **Issue 001:** Integrity Validation (1,081 lines)
 - **Issues 002–007:** Optimization, ETL, Dimensions, ERP Extraction, Fact Tables, Multi-Table Views (955 lines total)
 
@@ -51,9 +57,11 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 ---
 
 ### Phase 5.3: Development Standards  
+
 **Deliverables:** [Standards/](./Standards/) directory  
 **Total Lines:** 1,520+  
 **Four Core Guides:**
+
 1. **SQL Coding Standards** – Naming, formatting, error handling, logging
 2. **PowerShell Best Practices** – Functions, modules, security, pipelines
 3. **Git Workflow & PR Guidelines** – Branch naming, commit messages, code review
@@ -64,11 +72,13 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 ---
 
 ### Phase 5.4: GitHub Actions Workflow Testing  
+
 **Deliverable:** [.github/workflows/validate-solution.yml](./.github/workflows/validate-solution.yml)  
 **Status:** ✅ **Working end-to-end**
 
 #### Workflow Architecture
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │   Candidate creates PR with title:      │
 │   "Solution - [Name] - Issue [00X]"     │
@@ -109,7 +119,7 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 #### Key Fixes Applied
 
 | Issue | Root Cause | Solution |
-|-------|-----------|----------|
+| ------- | ----------- | ---------- |
 | SQL Auth failure | ankane/setup-sqlserver (Ubuntu-only) on Windows runner | Replaced with `sqllocaldb create/start` + Windows Auth (-E flag) |
 | Directory path error | Incorrect schema folder name (01_Schemas vs 01_Schema) | Corrected to `Database/01_Schema` |
 | PR comment permission denied | Missing GitHub token permissions | Added `permissions: pull-requests: write` |
@@ -120,7 +130,7 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 
 **Test Case:** TestCandidate submits Issue001 solution
 
-```
+```text
 ✅ Parse PR Title
    - Title: "Solution - [TestCandidate] - Issue [001]"
    - Extracted: candidate=TestCandidate, issue=001
@@ -144,8 +154,9 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 ## Commits & Deployment
 
 ### Main Branch Updates
+
 | Commit | Message | Impact |
-|--------|---------|--------|
+| -------- | --------- | -------- |
 | `e91cd82` | fix: use LocalDB for schema/data load | Windows runner SQL Server setup |
 | `971e307` | fix: correct schema directory name | Path consistency |
 | `b4cebc0` | fix: add pull-requests write permission | GitHub Actions permissions |
@@ -154,6 +165,7 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 | `335d093` (merged) | Fast-forward main from solution branch | All fixes brought to main |
 
 ### Branches
+
 - **main**: Production-ready, all Phase 5 work integrated
 - **solution-testcandidate-issue001**: Archived test branch (reference for future candidates)
 
@@ -162,6 +174,7 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 ## Deliverables Summary
 
 ### Documentation
+
 - ✅ [SETUP.md](./SETUP.md) – Installation & troubleshooting (2,847 lines)
 - ✅ [Issues/](./Issues/) – 7 issue specifications with requirements (2,036+ lines)
 - ✅ [Standards/](./Standards/) – 4 development guides (1,520+ lines)
@@ -169,6 +182,7 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 - ✅ Supporting docs (PR title format, workflow guide, executive summary) – 1,000+ lines
 
 ### Code & Infrastructure
+
 - ✅ Test solution (Solutions/TestCandidate/Issue001/) – SQL files + SOLUTION.md
 - ✅ Database setup scripts (Database/01_Schema/, Database/02_Data/)
 - ✅ GitHub Actions workflow (tested & working)
@@ -181,7 +195,7 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 ## Platform Readiness Checklist
 
 | Component | Status | Notes |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | Candidate instructions | ✅ | SETUP.md + PR title format documented |
 | Issue specifications | ✅ | 7 issues defined with clear requirements |
 | Development standards | ✅ | SQL, PowerShell, Git, logging guides ready |
@@ -243,6 +257,7 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 ## Conclusion
 
 **Phase 5 is complete and production-ready.** The BI Technical Assessment platform now has a fully automated, scalable infrastructure for evaluating candidate solutions. The GitHub Actions workflow reliably:
+
 - Parses submission metadata (candidate, issue)
 - Validates solution structure & content
 - Generates scores & feedback
@@ -251,7 +266,7 @@ Phase 5 successfully established a complete, working **GitHub Actions CI/CD pipe
 
 All documentation is consolidated, standards are clear, and the system has been tested end-to-end with a representative test case.
 
-**Ready for Phase 6: Candidate Onboarding & Scaling**
+Ready for Phase 6: Candidate Onboarding & Scaling
 
 ---
 
