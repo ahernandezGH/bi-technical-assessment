@@ -10,7 +10,7 @@
 ### What Was Accomplished
 
 | Deliverable | Lines | Status |
-|------------|-------|--------|
+| ------------ | ------- | -------- |
 | **SETUP.md** - Installation guide | 2,847 | ✅ |
 | **Issues/** - 7 specifications | 2,036+ | ✅ |
 | **Standards/** - 4 development guides | 1,520+ | ✅ |
@@ -47,7 +47,7 @@
 
 ### Technical Infrastructure
 
-```
+```text
 ┌─────────────────────────────────────────┐
 │   Candidate submits PR                   │
 │   "Solution - [Name] - Issue [00X]"     │
@@ -102,6 +102,7 @@
 **Target:** Full SQL validation with performance metrics
 
 **Deliverables:**
+
 - [ ] Restore SQL-based validation (PARSEONLY syntax check)
 - [ ] Execute validation queries against test databases
 - [ ] Check expected results vs actual results
@@ -110,6 +111,7 @@
 - [ ] Partial credit system (e.g., 25pts files + 25pts syntax + 50pts correctness)
 
 **Validation Criteria:**
+
 ```sql
 -- Example for Issue 001:
 -- Check 1: Files exist (25 pts)
@@ -128,6 +130,7 @@
 **Objective:** Create materials to onboard first batch of candidates
 
 **Deliverables:**
+
 - [ ] **Candidate Welcome Email Template**
   - Link to repo
   - Instructions to fork
@@ -147,7 +150,8 @@
   - Contact information
 
 - [ ] **Checklist for Candidates**
-  ```
+
+  ``` text
   Before starting:
   [ ] Forked repository
   [ ] Cloned locally
@@ -166,6 +170,7 @@
 **Objective:** Make it easy for evaluators to track candidate progress
 
 **Deliverables:**
+
 - [ ] **GitHub Project Board**
   - Automated: PR creates card
   - Columns: Submitted → Validated → Pass/Fail → Scheduled
@@ -195,6 +200,7 @@
 **Objective:** Ensure system handles multiple simultaneous candidates
 
 **Deliverables:**
+
 - [ ] **Load Test GitHub Actions**
   - Simulate 10 PRs created within 1 hour
   - Check workflow queue behavior
@@ -225,6 +231,7 @@
 **Objective:** Ensure all docs reflect production usage
 
 **Deliverables:**
+
 - [ ] **SETUP.md Updates**
   - Add section for evaluators
   - Include GitHub Project Board instructions
@@ -255,6 +262,7 @@
 **Objective:** Secure repository for production use
 
 **Deliverables:**
+
 - [ ] **Branch Protection Rules**
   - `main` branch protected
   - Require PR reviews before merge
@@ -280,7 +288,7 @@
 ### Phase 6 Milestones
 
 | Milestone | Deliverables | Due Date | Status |
-|-----------|-------------|----------|--------|
+| ----------- | ------------ | ---------- | ------ |
 | **M1: Enhanced Validation** | SQL validator, scoring rubric | +5 days | ⏳ |
 | **M2: Candidate Materials** | Onboarding docs, FAQ | +8 days | ⏳ |
 | **M3: Evaluator Tools** | Dashboard, tracking sheet | +12 days | ⏳ |
@@ -294,7 +302,7 @@
 ### Phase 6 Success Criteria
 
 | Criterion | Target | Measurement |
-|-----------|--------|-------------|
+| ----------- | -------- | ------------- |
 | Validator accuracy | 95%+ | SQL checks match manual review |
 | Workflow reliability | 99%+ uptime | No failures over 100 PRs |
 | Candidate satisfaction | 4.5/5 | Post-assessment survey |
@@ -307,36 +315,43 @@
 ### Quick Start Guide for Phase 6
 
 **Day 1-2:**
+
 - Start with 6.1 Enhanced Validator (SQL checks)
 - Update `Test-Solution-Local.ps1` to match new validator
 - Test with TestCandidate/Issue001
 
 **Day 3-5:**
+
 - Create onboarding materials (6.2)
 - Draft email templates
 - Create FAQ from Phase 5 lessons learned
 
 **Day 6-8:**
+
 - Setup GitHub Project Board (6.3)
 - Create tracking sheet template
 - Test with 2-3 mock PRs
 
 **Day 9-10:**
+
 - Run load tests (6.4)
 - Fix any bottlenecks
 - Document retry flow
 
 **Day 11-12:**
+
 - Complete all documentation (6.5)
 - Peer review guides
 - Get sign-off from stakeholders
 
 **Day 13-14:**
+
 - Lock down security (6.6)
 - Enable branch protection
 - Final QA checklist
 
 **Day 15+ (Buffer):**
+
 - Address any issues found in testing
 - Prepare for first candidate batch
 
