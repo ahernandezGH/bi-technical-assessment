@@ -22,7 +22,7 @@ Repositorio de evaluación técnica para candidatos a posiciones de BI Developer
 Este assessment evalúa habilidades en:
 
 - **SQL Server**: T-SQL, stored procedures, integridad referencial
-- **ETL Patterns**: Staging → DWH → Views (arquitectura UFT_FIN)
+- **ETL Patterns**: Staging → DWH → Views (arquitectura School_ERP)
 - **Data Quality**: Validación de datos, detección de inconsistencias
 - **Documentation**: Capacidad de explicar soluciones técnicas
 

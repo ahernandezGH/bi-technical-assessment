@@ -25,7 +25,7 @@
 #>
 
 param(
-    [string]$ServerName = "AHMHW",
+    [string]$ServerName = "localhost",
     [string]$Username = "rl",
     [string]$Password = "rl2"
 )
@@ -170,7 +170,7 @@ try {
 Write-Header "CHECK 2: SQL Server"
 
 $totalChecks++
-$sqlConnected = Test-SQLConnection -Server $ServerName -User $Username -Pass $Pass
+$sqlConnected = Test-SQLConnection -Server $ServerName -User $Username -Pass $Password
 
 if ($sqlConnected) {
     $checksOK += Write-Check "Conexión a SQL Server" $true "$ServerName"
