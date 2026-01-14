@@ -1,4 +1,4 @@
-name: Validate Solution
+﻿name: Validate Solution
 
 permissions:
   contents: read
@@ -107,49 +107,25 @@ jobs:
         run: |
           $candidate = "${{ needs.parse-pr-title.outputs.candidate }}"
           $issue = "${{ needs.parse-pr-title.outputs.issue }}"
-          
-          Write-Host "Running validator for Candidate: $candidate, Issue: $issue"
-          
-          $solutionPath = "Solutions\$candidate\Issue$issue"
-          
-          # Check if solution folder exists
-          if (-not (Test-Path $solutionPath)) {
-            Write-Host "ERROR: Solution folder not found at $solutionPath"
-            $output = "ERROR: Solution folder not found`nSTATUS: FAIL`nSCORE: 0/100"
-            $output | Out-File -FilePath "validation-output.txt" -Encoding UTF8
-            exit 1
-          }
-          
-          # Placeholder validation - can be extended with actual checks
-          Write-Host "Solution folder found, validating contents..."
-          
-          $requiredFiles = @("SOLUTION.md")
-          $missingFiles = @()
-          
-          foreach ($file in $requiredFiles) {
-            if (-not (Test-Path "$solutionPath\$file")) {
-              $missingFiles += $file
-            }
-          }
-          
-          if ($missingFiles.Count -gt 0) {
-            $output = "ERROR: Missing required files: $($missingFiles -join ', ')`nSTATUS: FAIL`nSCORE: 0/100"
-          } else {
-            # Simple validation: check if SOLUTION.md has content
-            $solutionContent = Get-Content "$solutionPath\SOLUTION.md" -Raw
-            $wordCount = ($solutionContent | Measure-Object -Word).Words
-            
-            if ($wordCount -lt 50) {
-              $output = "VALIDATION: SOLUTION.md too short ($wordCount words, minimum 50)`nSTATUS: FAIL`nSCORE: 25/100"
-            } else {
-              $output = "VALIDATION: All checks passed`nSTATUS: PASS`nSCORE: 75/100"
-            }
-          }
-          
+
+          Write-Host "Running Validate-Solution.ps1 for Candidate: $candidate, Issue: $issue"
+
+          # Execute the validation script
+          $output = & ".\Tools\Validate-Solution.ps1" -Issue $issue -Candidate $candidate 2>&1 | Out-String
+
           # Save output for comment
           $output | Out-File -FilePath "validation-output.txt" -Encoding UTF8
-          
+
           Write-Host $output
+
+          # Check for PASS/FAIL in output
+          if ($output -match 'STATUS:\s*(PASS|FAIL)') {
+            $status = $matches[1]
+            if ($status -eq "FAIL") {
+              Write-Host "Validation failed"
+              exit 1
+            }
+          }
         shell: pwsh
 
       - name: Extract Score and Status
@@ -190,8 +166,8 @@ jobs:
             
             const output = fs.readFileSync('validation-output.txt', 'utf8');
             
-            const statusEmoji = status === 'PASS' ? '✅' : '❌';
-            const statusColor = status === 'PASS' ? '🟢' : '🔴';
+            const statusEmoji = status === 'PASS' ? 'âœ…' : 'âŒ';
+            const statusColor = status === 'PASS' ? 'ðŸŸ¢' : 'ðŸ”´';
             
             const body = `## ${statusEmoji} Solution Validation Results
             
@@ -203,7 +179,7 @@ jobs:
             ---
             
             <details>
-            <summary>📋 Full Validation Output</summary>
+            <summary>ðŸ“‹ Full Validation Output</summary>
             
             \`\`\`
             ${output}
@@ -214,8 +190,8 @@ jobs:
             ---
             
             ${status === 'PASS' 
-              ? '🎉 **Congratulations!** Your solution meets the minimum requirements (≥70 points). You are eligible for Phase 2 (Technical Interview).' 
-              : '⚠️ **Improvements Needed:** Your solution does not meet the minimum requirements (≥70 points). Please review the feedback above and resubmit (1 retry allowed).'}
+              ? 'ðŸŽ‰ **Congratulations!** Your solution meets the minimum requirements (â‰¥70 points). You are eligible for Phase 2 (Technical Interview).' 
+              : 'âš ï¸ **Improvements Needed:** Your solution does not meet the minimum requirements (â‰¥70 points). Please review the feedback above and resubmit (1 retry allowed).'}
             
             ---
             

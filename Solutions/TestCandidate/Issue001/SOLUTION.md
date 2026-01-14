@@ -1,57 +1,44 @@
-# Solución Issue 001 - Data Integrity Validation
+﻿# Issue001 - Modelado Dimensional de Entidad Persona
 
-**Candidato:** Juan Pérez  
-**Fecha:** 2025-12-28  
-**Issue:** 001 - Validación de Integridad Referencial
+## Contexto
+Este issue requiere implementar una dimension de personas siguiendo los estandares de modelado dimensional de UFT Academic.
 
-## Problema Identificado
+## Solucion Propuesta
 
-La tabla `mat.hechos_matricula` contiene **15 registros huérfanos** con `id_estudiante` entre 99985-99999 que no existen en `cat.dim_estudiantes`. Esto representa un problema crítico de integridad referencial que:
+### 1. Estructura de la Tabla
+Se crea la tabla `dim_personas` con las siguientes caracteristicas:
 
-- Genera errores en reportes con INNER JOIN
-- Distorsiona métricas de matrícula
-- Indica falta de validación en ETL
+- **Surrogate Key (SK)**: `id_persona` como BIGINT IDENTITY(1,1)
+- **Natural Key (NK)**: `codigo_persona` como identificador de negocio
+- **Atributos dimensionales**: nombre completo, correo, fecha nacimiento
+- **Metadatos de auditoria**: fecha insercion, fecha modificacion
 
-## Estrategia de Solución
+### 2. Patron de Tipo 1 (Sobrescritura)
+Esta dimension implementa el patron Slowly Changing Dimension (SCD) Tipo 1, donde:
+- Los cambios sobrescriben los valores existentes
+- Se mantiene registro de ultima modificacion via `fecha_modificacion`
+- No se mantiene historico de cambios
 
-### 1. Detección de Huérfanos (QA_ValidarIntegridadEstudiantes.sql)
+### 3. Consideraciones de Diseno
 
-Implementé consulta con **LEFT JOIN** para detectar registros sin correspondencia en dimensión estudiantes. La query retorna los 15 huérfanos esperados con identificación clara del problema.
+**Claves:**
+- Primary Key en surrogate key para eficiencia
+- Unique constraint en natural key para integridad referencial
+- Clustered index en SK para optimizar joins con tablas de hechos
 
-### 2. Prevención Pre-Insert (PROC_ValidarIntegridadPreInsert.sql)
+**Indices:**
+- Clustered en `id_persona` (PK)
+- Non-clustered unico en `codigo_persona` (NK)
 
-Creé stored procedure de validación con:
+**Constraints:**
+- NOT NULL en campos criticos (SK, NK, nombres)
+- Valores NULL permitidos en campos opcionales (correo, fecha nacimiento)
 
-- **INPUT:** id_estudiante, id_termino, id_programa, id_cohorte
-- **OUTPUT:** @resultado BIT (0=inválido, 1=válido), @mensaje VARCHAR(500)
-- **LÓGICA:** Verificar EXISTS en cada dimensión antes de permitir insert
-- **MANEJO ERRORES:** TRY/CATCH con mensajes descriptivos
+### 4. Integracion con Arquitectura UFT
+Esta dimension sigue los estandares del proyecto:
+- Nomenclatura coherente con convenciones UFT_FIN_DWH
+- Auditoria mediante campos fecha_insercion y fecha_modificacion
+- Uso de BIGINT para SKs (escala para volumenes grandes)
 
-El SP retorna código 0 y mensaje específico si alguna FK es inválida, bloqueando el insert.
-
-### 3. Remediación de Datos
-
-Para corregir los 15 registros existentes, propongo:
-- **Opción A:** DELETE de registros huérfanos (si no tienen valor de negocio)
-- **Opción B:** INSERT de estudiantes placeholder con id_estudiante 99985-99999
-- **Opción C:** Mapeo a estudiante "Desconocido" (id_estudiante = -1)
-
-Recomiendo **Opción A** con log de auditoria.
-
-## Resultados
-
-- ✅ QA detecta 100% de huérfanos (15 registros)
-- ✅ SP previene nuevos inserts inválidos con validación completa
-- ✅ Mensajes de error descriptivos facilitan debugging
-- ✅ Implementación lista para integración en ETL
-
-## Próximos Pasos
-
-1. Ejecutar remediación de datos (DELETE huérfanos)
-2. Integrar SP en proceso ETL de carga
-3. Crear alerta diaria para detectar nuevos huérfanos
-4. Documentar procedimiento en manual operacional
-
----
-
-**Total palabras:** 287
+## Archivos Entregados
+- `CREATE_table.sql`: Script DDL con la definicion completa de la tabla
