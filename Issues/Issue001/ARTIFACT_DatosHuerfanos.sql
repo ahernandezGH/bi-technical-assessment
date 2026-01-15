@@ -38,13 +38,15 @@ GO
 -- ===========================================================================
 
 SELECT 
-    hm.id_matricula,
+    hm.id_hecho_matricula,
     hm.id_estudiante,
     hm.id_termino,
     hm.id_programa,
     hm.id_cohorte,
-    hm.monto_matricula,
+    hm.codigo_programa,
+    hm.nombre_programa,
     hm.fecha_matricula,
+    hm.creditos_inscritos,
     'HUERFANO: id_estudiante no existe' AS problema
 FROM mat.hechos_matricula hm
 LEFT JOIN cat.dim_estudiantes de ON hm.id_estudiante = de.id_estudiante
@@ -90,12 +92,12 @@ SELECT
     dt.codigo_termino AS termino,
     dp.nombre_programa AS programa,
     dc.codigo_cohorte AS cohorte,
-    hm.monto_matricula
+    hm.creditos_inscritos
 FROM mat.hechos_matricula hm
 INNER JOIN cat.dim_estudiantes de ON hm.id_estudiante = de.id_estudiante
 INNER JOIN cat.dim_terminos dt ON hm.id_termino = dt.id_termino
 INNER JOIN cat.dim_programas dp ON hm.id_programa = dp.id_programa
-INNER JOIN cat.dim_cohortes dc ON hm.id_cohorte = dc.id_cohorte
+LEFT JOIN cat.dim_cohortes dc ON hm.id_cohorte = dc.id_cohorte
 WHERE hm.id_estudiante > 99980; -- Este filtro NO retornaria registros huerfanos
 
 -- ===========================================================================

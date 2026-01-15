@@ -66,7 +66,7 @@ $IssueConfig = @{
         )
         MinWords = 150
         Database = "BI_Assessment_DWH"
-        ValidationQuery = "SELECT COUNT(*) AS huerfanos FROM mat.hechos_matricula WHERE id_estudiante NOT IN (SELECT id_estudiante FROM cat.dim_estudiantes)"
+        ValidationQuery = "SELECT COUNT(*) AS huerfanos FROM [BI_Assessment_DWH].mat.hechos_matricula hm LEFT JOIN [BI_Assessment_DWH].cat.dim_estudiantes de ON hm.id_estudiante = de.id_estudiante WHERE de.id_estudiante IS NULL"
         ExpectedResult = 15
     }
     "002" = @{
