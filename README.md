@@ -88,7 +88,7 @@ cd bi-technical-assessment
 
 ```powershell
 # Ejecutar desde raíz del repositorio
-cd Database\01_Schemas
+cd Database\01_Schema
 sqlcmd -S [TU_SERVIDOR] -E -i CREATE_SchoolERP_Source.sql
 sqlcmd -S [TU_SERVIDOR] -E -i CREATE_BI_Assessment_Staging.sql
 sqlcmd -S [TU_SERVIDOR] -E -i CREATE_BI_Assessment_DWH.sql
@@ -161,7 +161,8 @@ git push origin main
 
 # En GitHub: Create Pull Request
 # TÍTULO (CRÍTICO): Solution - [TuNombre] - Issue [00X]
-# Ejemplo: "Solution - [JuanPerez] - Issue [001]"
+# Ejemplo: "Solution - JuanPerez - Issue 001"
+# Los corchetes [] son opcionales pero recomendados para legibilidad.
 ```
 
 **⚠️ IMPORTANTE**: El título del PR **DEBE** seguir exactamente el formato:
@@ -170,6 +171,7 @@ git push origin main
 Solution - [Candidate] - Issue [00X]
 ```
 
+Donde `Candidate` es tu nombre sin espacios ni guiones, e `Issue` es el código de 3 dígitos. Los corchetes `[]` son opcionales.
 De lo contrario, el auto-grading no se activará.
 
 ### 6. Auto-Grading
@@ -279,11 +281,12 @@ GitHub Actions ejecutará automáticamente:
 
 ---
 
-##  Need Help?
+## Need Help?
 
 Having issues during setup, validation, or submission?
 
 Check our [Troubleshooting Guide](TROUBLESHOOTING.md) for solutions to common problems:
+
 - Setup and installation errors
 - Database connection issues
 - GitHub Actions workflow problems
@@ -291,9 +294,10 @@ Check our [Troubleshooting Guide](TROUBLESHOOTING.md) for solutions to common pr
 - SQL execution errors
 - Issue-specific solutions
 
-**Quick Reference**: If Validate-Solution.ps1 passes but your SQL fails in SSMS, see [Troubleshooting  Errores de Ejecuci�n SQL](TROUBLESHOOTING.md#errores-de-ejecuci�n-sql) for common column name mismatches.
+**Quick Reference**: If Validate-Solution.ps1 passes but your SQL fails in SSMS, see [Troubleshooting  Errores de Ejecuci�n SQL](TROUBLESHOOTING.md#errores-de-ejecuci�n-sql) for common column name mismatches.
 
 ---
+
 ## FAQ
 
 ### ¿Puedo usar herramientas de IA (ChatGPT, Copilot)?
@@ -310,9 +314,10 @@ Verifica el título del PR:
 
 ```text
 ✅ Correcto: Solution - [JuanPerez] - Issue [001]
+✅ Correcto: Solution - JuanPerez - Issue 001
 ❌ Incorrecto: Solution JuanPerez Issue 001
 ❌ Incorrecto: Solution - JuanPerez - Issue 1 (debe ser 001)
-❌ Incorrecto: Solution - Juan Perez - Issue [001] (sin espacios en nombre)
+❌ Incorrecto: Solution - Juan Perez - Issue [001] (sin espacios en nombre ni guiones)
 ```
 
 ### ¿Puedo resolver múltiples issues?
@@ -373,11 +378,12 @@ sqlcmd -S [SERVIDOR] -E -i "tu_script.sql" -o "OUTPUT_debug.txt"
 
 **Automático**. El workflow usa:
 
-- `ankane/setup-sqlserver@v1` (SQL Server 2019 en Ubuntu runner)
-- Credenciales: `sa` / `YourStrong@Passw0rd` (hardcoded en workflow)
-- Databases creadas on-the-fly
+- GitHub Actions Runner con Windows
+- **SQL Server LocalDB** (`(localdb)\MSSQLLocalDB`)
+- Autenticación: Windows Integrated Security (`-E` en sqlcmd)
+- Bases de datos `SchoolERP_Source`, `BI_Assessment_Staging` y `BI_Assessment_DWH` creadas on-the-fly
 
-No necesitas configurar nada - el runner es efímero.
+No necesitas configurar nada - el runner es efímero y se autoconfigura.
 
 ### ¿Cuánto tarda el auto-grading?
 
@@ -421,4 +427,3 @@ Este repositorio es privado y confidencial. Uso exclusivo para procesos de selec
 Good luck! 🚀
 
 **Última actualización:** Diciembre 2025
-
