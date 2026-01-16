@@ -24,113 +24,71 @@ jobs:
         run: |
           TITLE="${{ github.event.pull_request.title }}"
           echo "PR Title: $TITLE"
-          
-          # More flexible format: "Solution - [Candidate] - Issue [00X]" (brackets optional)
-          if [[ $TITLE =~ ^Solution\ -\ \[?([^\]\ -\s]+)\]?\ -\ Issue\ \[?([0-9]{3})\]? ]]; then
+          if [[ "$TITLE" =~ ^Solution\ -\ \[?([^\]\ -\s]+)\]?\ -\ Issue\ \[?([0-9]{3})\]? ]]; then
             CANDIDATE="${BASH_REMATCH[1]}"
             ISSUE="${BASH_REMATCH[2]}"
             echo "candidate=$CANDIDATE" >> $GITHUB_OUTPUT
             echo "issue=$ISSUE" >> $GITHUB_OUTPUT
-            echo "Candidate: $CANDIDATE"
-            echo "Issue: $ISSUE"
           else
-            echo "ERROR: PR title does not match expected format"
-            echo "Expected: 'Solution - [Name] - Issue [00X]'"
+            echo "ERROR: Format mismatch"
+            exit 1
+          fi
+
+  validate:
+    name: Run Validation Logic
     needs: parse-pr-title
+    runs-on: windows-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      
+
       - name: Verify Solution Files
         id: verify
         run: |
           $candidate = "${{ needs.parse-pr-title.outputs.candidate }}"
           $issue = "${{ needs.parse-pr-title.outputs.issue }}"
           $solutionPath = "Solutions\$candidate\Issue$issue"
-          
-          Write-Host "Checking for solution at: $solutionPath"
-          
-          if (-not (Test-Path $solutionPath)) {
-            Write-Host "ERROR: Solution directory not found at $solutionPath"
-            exit 1
-          }
-          
-          Write-Host "Solution directory found"
-          Get-ChildItem $solutionPath -Recurse | ForEach-Object { Write-Host "  - $($_.Name)" }
+          if (-not (Test-Path $solutionPath)) { exit 1 }
         shell: pwsh
-      
+
       - name: Setup SQL Server
         run: |
-          Write-Host "Starting SQL Server LocalDB..."
           sqllocaldb create MSSQLLocalDB
           sqllocaldb start MSSQLLocalDB
-          sqllocaldb info MSSQLLocalDB
-          Write-Host "SQL Server LocalDB ready"
         shell: pwsh
 
       - name: Create Test Databases
         run: |
-          Write-Host "Creating test databases..."
-          sqlcmd -S "(localdb)\MSSQLLocalDB" -E -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'BI_Assessment_Source') CREATE DATABASE [BI_Assessment_Source];"
-          sqlcmd -S "(localdb)\MSSQLLocalDB" -E -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'BI_Assessment_Staging') CREATE DATABASE [BI_Assessment_Staging];"      
+          sqlcmd -S "(localdb)\MSSQLLocalDB" -E -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'SchoolERP_Source') CREATE DATABASE [SchoolERP_Source];"
+          sqlcmd -S "(localdb)\MSSQLLocalDB" -E -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'BI_Assessment_Staging') CREATE DATABASE [BI_Assessment_Staging];"
           sqlcmd -S "(localdb)\MSSQLLocalDB" -E -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'BI_Assessment_DWH') CREATE DATABASE [BI_Assessment_DWH];"
         shell: pwsh
-      
+
       - name: Load Test Schemas and Data
         run: |
-          Write-Host "Loading schemas..."
-          Get-ChildItem "Database\01_Schema" -Filter "*.sql" | Sort-Object Name | ForEach-Object {
-            Write-Host "Executing: $($_.Name)"
-            sqlcmd -S "(localdb)\MSSQLLocalDB" -E -i $_.FullName
-          }
-
-          Write-Host "Loading test data..."
-          Get-ChildItem "Database\02_Data" -Filter "*.sql" | Sort-Object Name | ForEach-Object {
-            Write-Host "Executing: $($_.Name)"
-            sqlcmd -S "(localdb)\MSSQLLocalDB" -E -i $_.FullName
-          }
-          Write-Host "Environment setup complete"
+          Get-ChildItem "Database\01_Schema" -Filter "*.sql" | Sort-Object Name | ForEach-Object { sqlcmd -S "(localdb)\MSSQLLocalDB" -E -i $_.FullName }
+          Get-ChildItem "Database\02_Data" -Filter "*.sql" | Sort-Object Name | ForEach-Object { sqlcmd -S "(localdb)\MSSQLLocalDB" -E -i $_.FullName }
         shell: pwsh
-      
-      - name: Run Validator
-        id: validate
-        continue-on-error: true
+
+      - name: Run Validator Script
+        id: run_validator
         run: |
           $candidate = "${{ needs.parse-pr-title.outputs.candidate }}"
           $issue = "${{ needs.parse-pr-title.outputs.issue }}"
-          
-          Write-Host "Running real validator for Candidate: $candidate, Issue: $issue"
-
-          # Use the real PowerShell validator script
-          .\Tools\Validate-Solution.ps1 `
-            -Issue $issue `
-            -Candidate $candidate `
-            -ServerName "(localdb)\MSSQLLocalDB" `
-            -TrustedConnection | Out-File -FilePath "validation-output.txt" -Encoding UTF8
-
-          # Output results to console
-          Get-Content "validation-output.txt"
-          # Extract score (format: "SCORE: XX/100")
-          if ($content -match 'SCORE:\s*(\d+)/(\d+)') {
-            $score = $matches[1]
-            $maxScore = $matches[2]
-            echo "score=$score" >> $env:GITHUB_OUTPUT
-            echo "max_score=$maxScore" >> $env:GITHUB_OUTPUT
-          } else {
-            echo "score=" >> $env:GITHUB_OUTPUT
-            echo "max_score=" >> $env:GITHUB_OUTPUT
+          & ".\Tools\Validate-Solution.ps1" -Issue $issue -Candidate "$candidate" -ServerName "(localdb)\MSSQLLocalDB" -TrustedConnection | Out-File -FilePath "results.txt" -Encoding UTF8
+          $content = Get-Content "results.txt" -Raw
+          Write-Host $content
+          if ($content -match 'SCORE:\s*(?<score>\d+)/(?<max>\d+)') {
+            echo "score=$($Matches['score'])" >> $env:GITHUB_OUTPUT
+            echo "max_score=$($Matches['max'])" >> $env:GITHUB_OUTPUT
           }
-          
-          # Extract status (format: "STATUS: PASS" or "STATUS: FAIL")
-          if ($content -match 'STATUS:\s*(PASS|FAIL)') {
-            $status = $matches[1]
-            echo "status=$status" >> $env:GITHUB_OUTPUT
-          } else {
-            echo "status=" >> $env:GITHUB_OUTPUT
+          if ($content -match 'STATUS:\s*(?<status>PASS|FAIL)') {
+            echo "status=$($Matches['status'])" >> $env:GITHUB_OUTPUT
           }
         shell: pwsh
+
       - name: Comment on PR
         uses: actions/github-script@v7
         with:
@@ -139,54 +97,19 @@ jobs:
             const fs = require('fs');
             const candidate = '${{ needs.parse-pr-title.outputs.candidate }}';
             const issue = '${{ needs.parse-pr-title.outputs.issue }}';
-            const score = '${{ steps.extract.outputs.score }}';
-            const maxScore = '${{ steps.extract.outputs.max_score }}';
-            const status = '${{ steps.extract.outputs.status }}';
-            
-            const output = fs.readFileSync('validation-output.txt', 'utf8');
-            
-            const statusEmoji = status === 'PASS' ? '✅' : '❌';
-            const statusColor = status === 'PASS' ? '🟢' : '🔴';
-            
-            const body = `## ${statusEmoji} Solution Validation Results
-            
-            **Candidate:** ${candidate}  
-            **Issue:** ${issue}  
-            **Score:** ${score}/${maxScore} points  
-            **Status:** ${statusColor} **${status}**
-            
+            const score = '${{ steps.run_validator.outputs.score }}';
+            const maxScore = '${{ steps.run_validator.outputs.max_score }}';
+            const status = '${{ steps.run_validator.outputs.status }}';
+            const output = fs.readFileSync('results.txt', 'utf8');
+            const body = `## ${status === 'PASS' ? '' : ''} Solution Validation Results
+            **Candidate:** ${candidate} | **Issue:** ${issue} | **Score:** **${score}/${maxScore}** | **Status:** ${status}
             ---
-            
-            <details>
-            <summary>📋 Full Validation Output</summary>
-            
-            \`\`\`
-            ${output}
-            \`\`\`
-            
-            </details>
-            
+            <details><summary> Full Output</summary>\n\n\`\`\`\n${output}\n\`\`\`\n</details>
             ---
-            
-            ${status === 'PASS' 
-              ? '🎉 **Congratulations!** Your solution meets the minimum requirements (≥70 points). You are eligible for Phase 2 (Technical Interview).' 
-              : '⚠️ **Improvements Needed:** Your solution does not meet the minimum requirements (≥70 points). Please review the feedback above and resubmit (1 retry allowed).'}
-            
-            ---
-            
-            *Auto-generated by [validate-solution.yml](../.github/workflows/validate-solution.yml)*
-            `;
-            
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: body
-            });
-      
-      - name: Set Status Check
-        if: steps.extract.outputs.status == 'FAIL'
-        run: |
-          Write-Host "Solution validation FAILED"
-          exit 1
+            ${status === 'PASS' ? ' **Pass!** Eligible for Phase 2.' : ' **Fail.** Please review and resubmit.'}`;
+            await github.rest.issues.createComment({ issue_number: context.issue.number, owner: context.repo.owner, repo: context.repo.repo, body: body });
+
+      - name: Final Status
+        if: steps.run_validator.outputs.status == 'FAIL'
+        run: exit 1
         shell: pwsh
