@@ -279,11 +279,12 @@ GitHub Actions ejecutará automáticamente:
 
 ---
 
-##  Need Help?
+## Need Help?
 
 Having issues during setup, validation, or submission?
 
 Check our [Troubleshooting Guide](TROUBLESHOOTING.md) for solutions to common problems:
+
 - Setup and installation errors
 - Database connection issues
 - GitHub Actions workflow problems
@@ -291,9 +292,10 @@ Check our [Troubleshooting Guide](TROUBLESHOOTING.md) for solutions to common pr
 - SQL execution errors
 - Issue-specific solutions
 
-**Quick Reference**: If Validate-Solution.ps1 passes but your SQL fails in SSMS, see [Troubleshooting  Errores de Ejecuci�n SQL](TROUBLESHOOTING.md#errores-de-ejecuci�n-sql) for common column name mismatches.
+**Quick Reference**: If Validate-Solution.ps1 passes but your SQL fails in SSMS, see [Troubleshooting  Errores de Ejecuci�n SQL](TROUBLESHOOTING.md#errores-de-ejecuci�n-sql) for common column name mismatches.
 
 ---
+
 ## FAQ
 
 ### ¿Puedo usar herramientas de IA (ChatGPT, Copilot)?
@@ -421,4 +423,3 @@ Este repositorio es privado y confidencial. Uso exclusivo para procesos de selec
 Good luck! 🚀
 
 **Última actualización:** Diciembre 2025
-
