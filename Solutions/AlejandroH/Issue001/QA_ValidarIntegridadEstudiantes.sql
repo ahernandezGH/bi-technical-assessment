@@ -11,7 +11,7 @@ GO
 
 -- Detectar FK huerfanos
 SELECT 
-    hm.id_matricula,
+    hm.id_hecho_matricula,
     hm.id_estudiante,
     'FK invalido' AS problema
 FROM mat.hechos_matricula hm
