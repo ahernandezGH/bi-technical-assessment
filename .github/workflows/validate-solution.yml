@@ -25,8 +25,8 @@ jobs:
           TITLE="${{ github.event.pull_request.title }}"
           echo "PR Title: $TITLE"
           
-          # Expected format: "Solution - [Candidate] - Issue [00X]"
-          if [[ $TITLE =~ ^Solution\ -\ \[([^\]]+)\]\ -\ Issue\ \[([0-9]{3})\]$ ]]; then
+          # More flexible format: "Solution - [Candidate] - Issue [00X]" (brackets optional)
+          if [[ $TITLE =~ ^Solution\ -\ \[?([^\]\ -\s]+)\]?\ -\ Issue\ \[?([0-9]{3})\]? ]]; then
             CANDIDATE="${BASH_REMATCH[1]}"
             ISSUE="${BASH_REMATCH[2]}"
             echo "candidate=$CANDIDATE" >> $GITHUB_OUTPUT
@@ -35,14 +35,7 @@ jobs:
             echo "Issue: $ISSUE"
           else
             echo "ERROR: PR title does not match expected format"
-            echo "Expected: 'Solution - [Candidate] - Issue [00X]'"
-            echo "Got: '$TITLE'"
-            exit 1
-          fi
-
-  validate-solution:
-    name: Validate Solution
-    runs-on: windows-latest
+            echo "Expected: 'Solution - [Name] - Issue [00X]'"
     needs: parse-pr-title
     steps:
       - name: Checkout Repository
@@ -108,55 +101,17 @@ jobs:
           $candidate = "${{ needs.parse-pr-title.outputs.candidate }}"
           $issue = "${{ needs.parse-pr-title.outputs.issue }}"
           
-          Write-Host "Running validator for Candidate: $candidate, Issue: $issue"
-          
-          $solutionPath = "Solutions\$candidate\Issue$issue"
-          
-          # Check if solution folder exists
-          if (-not (Test-Path $solutionPath)) {
-            Write-Host "ERROR: Solution folder not found at $solutionPath"
-            $output = "ERROR: Solution folder not found`nSTATUS: FAIL`nSCORE: 0/100"
-            $output | Out-File -FilePath "validation-output.txt" -Encoding UTF8
-            exit 1
-          }
-          
-          # Placeholder validation - can be extended with actual checks
-          Write-Host "Solution folder found, validating contents..."
-          
-          $requiredFiles = @("SOLUTION.md")
-          $missingFiles = @()
-          
-          foreach ($file in $requiredFiles) {
-            if (-not (Test-Path "$solutionPath\$file")) {
-              $missingFiles += $file
-            }
-          }
-          
-          if ($missingFiles.Count -gt 0) {
-            $output = "ERROR: Missing required files: $($missingFiles -join ', ')`nSTATUS: FAIL`nSCORE: 0/100"
-          } else {
-            # Simple validation: check if SOLUTION.md has content
-            $solutionContent = Get-Content "$solutionPath\SOLUTION.md" -Raw
-            $wordCount = ($solutionContent | Measure-Object -Word).Words
-            
-            if ($wordCount -lt 50) {
-              $output = "VALIDATION: SOLUTION.md too short ($wordCount words, minimum 50)`nSTATUS: FAIL`nSCORE: 25/100"
-            } else {
-              $output = "VALIDATION: All checks passed`nSTATUS: PASS`nSCORE: 75/100"
-            }
-          }
-          
-          # Save output for comment
-          $output | Out-File -FilePath "validation-output.txt" -Encoding UTF8
-          
-          Write-Host $output
-        shell: pwsh
+          Write-Host "Running real validator for Candidate: $candidate, Issue: $issue"
 
-      - name: Extract Score and Status
-        id: extract
-        run: |
-          $content = Get-Content "validation-output.txt" -Raw
-          
+          # Use the real PowerShell validator script
+          .\Tools\Validate-Solution.ps1 `
+            -Issue $issue `
+            -Candidate $candidate `
+            -ServerName "(localdb)\MSSQLLocalDB" `
+            -TrustedConnection | Out-File -FilePath "validation-output.txt" -Encoding UTF8
+
+          # Output results to console
+          Get-Content "validation-output.txt"
           # Extract score (format: "SCORE: XX/100")
           if ($content -match 'SCORE:\s*(\d+)/(\d+)') {
             $score = $matches[1]

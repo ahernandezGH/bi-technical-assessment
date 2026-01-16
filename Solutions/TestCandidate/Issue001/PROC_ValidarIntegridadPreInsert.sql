@@ -17,7 +17,7 @@ CREATE OR ALTER PROCEDURE mat.spValidarIntegridadPreInsert
 AS
 BEGIN
     SET NOCOUNT ON;
-    
+    basura
     BEGIN TRY
         -- Validar estudiante
         IF NOT EXISTS (SELECT 1 FROM cat.dim_estudiantes WHERE id_estudiante = @id_estudiante)

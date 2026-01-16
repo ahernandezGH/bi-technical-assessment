@@ -42,6 +42,8 @@ param(
     [string]$Username = "rl",
     
     [string]$Password = "rl2",
+
+    [switch]$TrustedConnection,
     
     [switch]$DryRun
 )
@@ -176,24 +178,30 @@ function Test-SQLSyntax {
         [string]$Server,
         [string]$User,
         [string]$Pass,
-        [string]$Database
+        [string]$Database,
+        [bool]$Trusted
     )
     
     try {
-        # Usar SET PARSEONLY para verificar sintaxis sin ejecutar
+        # Usar SET NOEXEC para verificar existencia de columnas y objetos sin ejecutar
         $tempFile = [System.IO.Path]::GetTempFileName()
-        $sqlContent = 'SET PARSEONLY ON;' + [System.Environment]::NewLine + (Get-Content $FilePath -Raw) + [System.Environment]::NewLine + 'SET PARSEONLY OFF;'
+        $sqlContent = 'SET NOEXEC ON;' + [System.Environment]::NewLine + (Get-Content $FilePath -Raw) + [System.Environment]::NewLine + 'SET NOEXEC OFF;'
         $sqlContent | Out-File $tempFile -Encoding UTF8
         
-        $result = sqlcmd -S $Server -U $User -P $Pass -d $Database -i $tempFile -h -1 2>&1
+        # -b asegura que sqlcmd retorne errorlevel 1 si falla
+        if ($Trusted) {
+            $result = sqlcmd -b -S $Server -E -d $Database -i $tempFile -h -1 2>&1
+        } else {
+            $result = sqlcmd -b -S $Server -U $User -P $Pass -d $Database -i $tempFile -h -1 2>&1
+        }
         
         Remove-Item $tempFile -Force
         
         if ($LASTEXITCODE -eq 0) {
-            $successMsg = 'Sintaxis valida'
+            $successMsg = 'Sintaxis y objetos validos'
             return @{ Success = $true; Message = $successMsg }
         } else {
-            $errorMsg = 'Error de sintaxis: ' + ($result -join ' ')
+            $errorMsg = 'Error de compilacion/sintaxis: ' + ($result -join ' ')
             return @{ Success = $false; Message = $errorMsg }
         }
     } catch {
@@ -208,6 +216,8 @@ function Test-SQLSyntax {
 
 $mainHeader = 'VALIDADOR DE SOLUCIONES - BI TECHNICAL ASSESSMENT'
 Write-Header $mainHeader
+
+$hasCriticalError = $false
 
 if (-not $IssueConfig.ContainsKey($Issue)) {
     $errorMsg = 'ERROR: Issue ' + $Issue + ' no existe. Issues validos: 001-007'
@@ -286,9 +296,13 @@ if (-not $DryRun) {
     foreach ($file in $sqlFiles) {
         $filePath = Join-Path $solutionPath $file
         if (Test-Path $filePath) {
-            $result = Test-SQLSyntax -FilePath $filePath -Server $ServerName -User $Username -Pass $Password -Database $config.Database
+            $result = Test-SQLSyntax -FilePath $filePath -Server $ServerName -User $Username -Pass $Password -Database $config.Database -Trusted $TrustedConnection
             Write-Check $file $result.Success $result.Message
-            if ($result.Success) { $sqlValid++ }
+            if ($result.Success) { 
+                $sqlValid++ 
+            } else {
+                $hasCriticalError = $true
+            }
         }
     }
     
@@ -349,7 +363,11 @@ if ($config.ValidationQuery -and -not $DryRun) {
     $validationCheckPoints = 30
     
     try {
-        $result = sqlcmd -S $ServerName -U $Username -P $Password -d $config.Database -Q $config.ValidationQuery -h -1 -W 2>&1
+        if ($TrustedConnection) {
+            $result = sqlcmd -b -S $ServerName -E -d $config.Database -Q $config.ValidationQuery -h -1 -W 2>&1
+        } else {
+            $result = sqlcmd -b -S $ServerName -U $Username -P $Password -d $config.Database -Q $config.ValidationQuery -h -1 -W 2>&1
+        }
         # Filtrar solo lineas numericas (evita "(N rows affected)")
         $numericLine = $result | Where-Object { $_ -match '^\d+$' } | Select-Object -First 1
         $actualValue = [int]$numericLine
@@ -378,7 +396,7 @@ if ($config.ValidationQuery -and -not $DryRun) {
 Write-Header 'RESULTADO FINAL'
 
 $passingScore = 70
-$status = if ($score -ge $passingScore) { 'PASS' } else { 'FAIL' }
+$status = if ($score -ge $passingScore -and -not $hasCriticalError) { 'PASS' } else { 'FAIL' }
 $statusColor = if ($status -eq 'PASS') { $ColorSuccess } else { $ColorError }
 
 Write-Host ""
@@ -388,6 +406,12 @@ $statusSymbol = if ($status -eq 'PASS') { '[OK]' } else { '[FAIL]' }
 $statusMsg = 'STATUS: ' + $status + ' ' + $statusSymbol
 Write-Host $statusMsg -ForegroundColor $statusColor
 Write-Host ""
+
+if ($hasCriticalError) {
+    Write-Host "  ⚠️ BLOQUEADO: Se detectaron errores criticos de compilacion/sintaxis SQL." -ForegroundColor $ColorError
+    Write-Host "  Los candidatos deben entregar codigo funcional para ser elegibles." -ForegroundColor $ColorWarning
+    Write-Host ""
+}
 
 if ($status -eq 'PASS') {
     $passMsg = 'El candidato ' + $Candidate + ' es ELEGIBLE para Fase 2 (Entrevista Tecnica)'

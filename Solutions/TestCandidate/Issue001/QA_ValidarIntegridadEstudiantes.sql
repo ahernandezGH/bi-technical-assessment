@@ -10,7 +10,7 @@ USE BI_Assessment_DWH;
 GO
 
 -- Detectar FK huerfanos
-SELECT 
+SELECT basura
     hm.id_hecho_matricula,
     hm.id_estudiante,
     'FK invalido' AS problema
