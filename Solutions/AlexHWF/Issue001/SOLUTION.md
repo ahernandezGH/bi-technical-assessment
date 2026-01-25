@@ -1,6 +1,6 @@
 # Solución Issue 001 - Data Integrity Validation
 
-**Candidato:** Alex HWN  
+**Candidato:** Alex HWF 
 **Fecha:** 2026-01-25 
 **Issue:** 001 - Validación de Integridad Referencial
 
