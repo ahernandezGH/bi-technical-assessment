@@ -42,18 +42,34 @@ jobs:
     needs: parse-pr-title
     runs-on: windows-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout Base Repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: main
 
-      - name: Verify Solution Files
-        id: verify
+      - name: Checkout Candidate Solution
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: candidate-solution
+          sparse-checkout: |
+            Solutions
+
+      - name: Copy Candidate Solution
         run: |
           $candidate = "${{ needs.parse-pr-title.outputs.candidate }}"
           $issue = "${{ needs.parse-pr-title.outputs.issue }}"
-          $solutionPath = "Solutions\$candidate\Issue$issue"
-          if (-not (Test-Path $solutionPath)) { exit 1 }
+          $srcPath = "candidate-solution\Solutions\$candidate"
+          $dstPath = "Solutions\$candidate"
+          if (Test-Path $srcPath) {
+            Copy-Item -Path $srcPath -Destination $dstPath -Recurse -Force
+            Write-Host "Copied solution from $srcPath to $dstPath"
+            Get-ChildItem $dstPath -Recurse | ForEach-Object { Write-Host $_.FullName }
+          } else {
+            Write-Host "ERROR: Solution path not found: $srcPath"
+            exit 1
+          }
         shell: pwsh
 
       - name: Setup SQL Server
@@ -80,15 +96,34 @@ jobs:
         run: |
           $candidate = "${{ needs.parse-pr-title.outputs.candidate }}"
           $issue = "${{ needs.parse-pr-title.outputs.issue }}"
-          & ".\Tools\Validate-Solution.ps1" -Issue $issue -Candidate "$candidate" -ServerName "(localdb)\MSSQLLocalDB" -TrustedConnection | Out-File -FilePath "results.txt" -Encoding UTF8
-          $content = Get-Content "results.txt" -Raw
-          Write-Host $content
-          if ($content -match 'SCORE:\s*(?<score>\d+)/(?<max>\d+)') {
-            echo "score=$($Matches['score'])" >> $env:GITHUB_OUTPUT
-            echo "max_score=$($Matches['max'])" >> $env:GITHUB_OUTPUT
+          Write-Host "=== Running validation for $candidate Issue $issue ==="
+          try {
+            & ".\Tools\Validate-Solution.ps1" -Issue $issue -Candidate "$candidate" -ServerName "(localdb)\MSSQLLocalDB" -TrustedConnection 2>&1 | Out-File -FilePath "results.txt" -Encoding UTF8
+          } catch {
+            "ERROR: $_" | Out-File -FilePath "results.txt" -Encoding UTF8
           }
-          if ($content -match 'STATUS:\s*(?<status>PASS|FAIL)') {
-            echo "status=$($Matches['status'])" >> $env:GITHUB_OUTPUT
+          $content = Get-Content "results.txt" -Raw
+          Write-Host "=== Validator Output ==="
+          Write-Host $content
+          Write-Host "=== Parsing Results ==="
+          if ($content -match 'SCORE:\s*(\d+)/(\d+)') {
+            $score = $Matches[1]
+            $maxScore = $Matches[2]
+            Write-Host "Parsed score: $score / $maxScore"
+            echo "score=$score" >> $env:GITHUB_OUTPUT
+            echo "max_score=$maxScore" >> $env:GITHUB_OUTPUT
+          } else {
+            Write-Host "WARNING: Could not parse SCORE from output"
+            echo "score=0" >> $env:GITHUB_OUTPUT
+            echo "max_score=100" >> $env:GITHUB_OUTPUT
+          }
+          if ($content -match 'STATUS:\s*(PASS|FAIL)') {
+            $status = $Matches[1]
+            Write-Host "Parsed status: $status"
+            echo "status=$status" >> $env:GITHUB_OUTPUT
+          } else {
+            Write-Host "WARNING: Could not parse STATUS from output"
+            echo "status=FAIL" >> $env:GITHUB_OUTPUT
           }
         shell: pwsh
 
@@ -100,22 +135,39 @@ jobs:
             const fs = require('fs');
             const candidate = '${{ needs.parse-pr-title.outputs.candidate }}';
             const issue = '${{ needs.parse-pr-title.outputs.issue }}';
-            const score = '${{ steps.run_validator.outputs.score }}';
-            const maxScore = '${{ steps.run_validator.outputs.max_score }}';
-            const status = '${{ steps.run_validator.outputs.status }}';
-            const output = fs.readFileSync('results.txt', 'utf8');
+            const score = '${{ steps.run_validator.outputs.score }}' || '0';
+            const maxScore = '${{ steps.run_validator.outputs.max_score }}' || '100';
+            const status = '${{ steps.run_validator.outputs.status }}' || 'FAIL';
+            let output = 'No output available';
+            try {
+              output = fs.readFileSync('results.txt', 'utf8');
+            } catch (e) {
+              output = 'Error reading results: ' + e.message;
+            }
             const prNumber = context.payload.pull_request.number;
-            const body = `## ${status === 'PASS' ? '' : ''} Solution Validation Results
+            const emoji = status === 'PASS' ? ':white_check_mark:' : ':x:';
+            const resultEmoji = status === 'PASS' ? ':tada:' : ':warning:';
+            const body = `## ${emoji} Solution Validation Results
+
             **Candidate:** ${candidate} | **Issue:** ${issue} | **Score:** **${score}/${maxScore}** | **Status:** ${status}
+
             ---
-            <details><summary>Full Output</summary>\n\n\`\`\`\n${output}\n\`\`\`\n</details>
+            <details><summary>Full Output</summary>
+
+            \`\`\`
+            ${output}
+            \`\`\`
+
+            </details>
+
             ---
-            ${status === 'PASS' ? ' **Pass!** Eligible for Phase 2.' : ' **Fail.** Please review and resubmit.'}`;
-            await github.rest.issues.createComment({ 
-              issue_number: prNumber, 
-              owner: context.repo.owner, 
-              repo: context.repo.repo, 
-              body: body 
+            ${status === 'PASS' ? `${resultEmoji} **Pass!** Eligible for Phase 2.` : `${resultEmoji} **Fail.** Please review and resubmit.`}`;
+
+            await github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
             });
 
       - name: Final Status
