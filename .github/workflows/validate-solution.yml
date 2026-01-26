@@ -5,7 +5,7 @@ permissions:
   pull-requests: write
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
     branches:
       - main
@@ -24,7 +24,6 @@ jobs:
         run: |
           TITLE="${{ github.event.pull_request.title }}"
           echo "PR Title: $TITLE"
-          # Robust regex using variable to avoid escaping issues in inline shell script
           RE="^Solution - \[?([^] -]+)\]? - Issue \[?([0-9]{3})\]?"
           if [[ "$TITLE" =~ $RE ]]; then
             CANDIDATE="${BASH_REMATCH[1]}"
@@ -105,13 +104,19 @@ jobs:
             const maxScore = '${{ steps.run_validator.outputs.max_score }}';
             const status = '${{ steps.run_validator.outputs.status }}';
             const output = fs.readFileSync('results.txt', 'utf8');
+            const prNumber = context.payload.pull_request.number;
             const body = `## ${status === 'PASS' ? '' : ''} Solution Validation Results
             **Candidate:** ${candidate} | **Issue:** ${issue} | **Score:** **${score}/${maxScore}** | **Status:** ${status}
             ---
-            <details><summary> Full Output</summary>\n\n\`\`\`\n${output}\n\`\`\`\n</details>
+            <details><summary>Full Output</summary>\n\n\`\`\`\n${output}\n\`\`\`\n</details>
             ---
             ${status === 'PASS' ? ' **Pass!** Eligible for Phase 2.' : ' **Fail.** Please review and resubmit.'}`;
-            await github.rest.issues.createComment({ issue_number: context.issue.number, owner: context.repo.owner, repo: context.repo.repo, body: body });
+            await github.rest.issues.createComment({ 
+              issue_number: prNumber, 
+              owner: context.repo.owner, 
+              repo: context.repo.repo, 
+              body: body 
+            });
 
       - name: Final Status
         if: steps.run_validator.outputs.status == 'FAIL'

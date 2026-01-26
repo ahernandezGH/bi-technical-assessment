@@ -1,4 +1,4 @@
-# BI Technical Assessment
+﻿# BI Technical Assessment
 
 Universidad Hemisferio Sur Latinoamerica - Business Intelligence Platform
 
@@ -74,6 +74,14 @@ Este assessment evalúa habilidades en:
 git clone https://github.com/[TU_USERNAME]/bi-technical-assessment.git
 cd bi-technical-assessment
 ```
+
+**IMPORTANTE - Habilitar GitHub Actions en tu fork:**
+
+1. Ve a tu fork: `https://github.com/[TU_USERNAME]/bi-technical-assessment`
+2. Click en la pestana **Actions**
+3. Click en **I understand my workflows, go ahead and enable them**
+
+Sin este paso, el auto-grading NO funcionara cuando crees tu PR.
 
 ### 2. Setup del Entorno Local
 
@@ -154,17 +162,18 @@ Solutions/JuanPerez/Issue001/
 ### 5. Crear Pull Request
 
 ```bash
-# Commit y push
+# Crear branch para tu solucion
+git checkout -b solution/issue001
+
+# Commit y push a tu branch
 git add Solutions/[TuNombre]/
 git commit -m "Solution - [TuNombre] - Issue [00X]"
-git push origin main
+git push origin solution/issue001
 
-# En GitHub: Create Pull Request
-# TÍTULO (CRÍTICO): Solution - [TuNombre] - Issue [00X]
+# En GitHub: Click en "Compare & pull request" que aparece automaticamente
+# TITULO (CRITICO): Solution - [TuNombre] - Issue [00X]
 # Ejemplo: "Solution - JuanPerez - Issue 001"
-# Los corchetes [] son opcionales pero recomendados para legibilidad.
 ```
-
 **⚠️ IMPORTANTE**: El título del PR **DEBE** seguir exactamente el formato:
 
 ```text

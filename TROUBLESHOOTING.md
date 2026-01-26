@@ -1,4 +1,4 @@
-# Troubleshooting Guide - BI Technical Assessment
+﻿# Troubleshooting Guide - BI Technical Assessment
 
 Este documento cubre problemas comunes y sus soluciones. Si encuentras un error, consulta primero esta guía antes de crear un issue.
 
@@ -143,6 +143,29 @@ Get-Content .\.github\workflows\validate-solution.yml
 
 # Si falla localmente, corregir antes de hacer PR
 ```
+
+
+### Problema: "Fork creado pero GitHub Actions no se ejecutan"
+
+**Causa**: Por defecto, GitHub deshabilita los workflows en repositorios forkeados por seguridad.
+
+**Solucion**:
+
+1. Ve a tu fork: `https://github.com/[TU_USERNAME]/bi-technical-assessment`
+2. Click en la pestana **Actions**
+3. Veras un mensaje: "Workflows arent being run on this forked repository"
+4. Click en **I understand my workflows, go ahead and enable them**
+5. Crea tu PR nuevamente (o cierra y abre si ya existia)
+
+### Problema: "Error 403: Resource not accessible by integration"
+
+**Causa**: El workflow intenta comentar en el PR pero no tiene permisos suficientes.
+
+**Solucion**:
+
+1. Verifica que habilitaste GitHub Actions en tu fork (ver seccion anterior)
+2. Si el error persiste, contacta al evaluador - el workflow del repositorio base puede necesitar ajustes
+3. El resultado de tu evaluacion estara disponible en la pestana **Actions** de tu fork aunque el comentario falle
 
 ---
 
