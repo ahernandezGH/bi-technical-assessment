@@ -32,6 +32,7 @@ El SP retorna código 0 y mensaje específico si alguna FK es inválida, bloquea
 ### 3. Remediación de Datos
 
 Para corregir los 15 registros existentes, propongo:
+
 - **Opción A:** DELETE de registros huérfanos (si no tienen valor de negocio)
 - **Opción B:** INSERT de estudiantes placeholder con id_estudiante 99985-99999
 - **Opción C:** Mapeo a estudiante "Desconocido" (id_estudiante = -1)

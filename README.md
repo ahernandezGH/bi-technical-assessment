@@ -173,7 +173,8 @@ git push origin solution/issue001
 # En GitHub: Click en "Compare & pull request" que aparece automaticamente
 # TITULO (CRITICO): Solution - [TuNombre] - Issue [00X]
 # Ejemplo: "Solution - JuanPerez - Issue 001"
-```
+
+```text
 **⚠️ IMPORTANTE**: El título del PR **DEBE** seguir exactamente el formato:
 
 ```text

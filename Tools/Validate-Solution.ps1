@@ -37,9 +37,9 @@ param(
     [Parameter(Mandatory=$true)]
     [string]$Candidate,
     
-    [string]$ServerName = "AHMHW",
+    [string]$ServerName = "localhost",
     
-    [string]$Username = "rl",
+    [string]$Username = "sa",
     
     [string]$Password = "rl2",
 
