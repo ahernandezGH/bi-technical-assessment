@@ -65,7 +65,13 @@ jobs:
           if (Test-Path $srcPath) {
             Copy-Item -Path $srcPath -Destination $dstPath -Recurse -Force
             Write-Host "Copied solution from $srcPath to $dstPath"
-            Get-ChildItem $dstPath -Recurse | ForEach-Object { Write-Host $_.FullName }
+            Write-Host "Listing destination path $dstPath:"
+            if (Test-Path $dstPath) {
+              Get-ChildItem $dstPath -Recurse | ForEach-Object { Write-Host $_.FullName }
+            } else {
+              Write-Host "ERROR: Destination path missing: $dstPath"
+              exit 1
+            }
           } else {
             Write-Host "ERROR: Solution path not found: $srcPath"
             exit 1
@@ -106,7 +112,7 @@ jobs:
           Write-Host "=== Validator Output ==="
           Write-Host $content
           Write-Host "=== Parsing Results ==="
-          if ($content -match 'SCORE:\s*(\d+)/(\d+)') {
+          if ($content -match '(?i)SCORE:\s*([0-9]+)\s*/\s*([0-9]+)') {
             $score = $Matches[1]
             $maxScore = $Matches[2]
             Write-Host "Parsed score: $score / $maxScore"
@@ -117,8 +123,8 @@ jobs:
             echo "score=0" >> $env:GITHUB_OUTPUT
             echo "max_score=100" >> $env:GITHUB_OUTPUT
           }
-          if ($content -match 'STATUS:\s*(PASS|FAIL)') {
-            $status = $Matches[1]
+          if ($content -match '(?i)STATUS:\s*(PASS|FAIL)') {
+            $status = $Matches[1].ToUpper()
             Write-Host "Parsed status: $status"
             echo "status=$status" >> $env:GITHUB_OUTPUT
           } else {
