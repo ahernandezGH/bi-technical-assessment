@@ -21,13 +21,13 @@
     Contraseña SQL
     
 .EXAMPLE
-    .\Test-Environment.ps1 -Username "rl" -Password "rl2"
+    .\Test-Environment.ps1 -Username "user" -Password "pw"
 #>
 
 param(
     [string]$ServerName = "localhost",
-    [string]$Username = "rl",
-    [string]$Password = "rl2"
+    [string]$Username = "user",
+    [string]$Password = "pw"
 )
 
 $ErrorActionPreference = "Continue"

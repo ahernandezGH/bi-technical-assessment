@@ -58,7 +58,7 @@ Este assessment evalúa habilidades en:
 
 **Leyenda**:
 
-- ⭐ = Básico (conocimientos SQL fundamentales)
+- ⭐⭐ = Básico (conocimientos SQL fundamentales)
 - ⭐⭐⭐ = Intermedio (procedures, CTEs, error handling)
 - ⭐⭐⭐⭐⭐ = Avanzado (ETL completo, PowerShell, cross-database)
 
