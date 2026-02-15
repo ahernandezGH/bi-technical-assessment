@@ -11,8 +11,23 @@ on:
       - main
 
 jobs:
+  validate-branch:
+    name: Validate Source Branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Branch Name
+        run: |
+          HEAD_REF="${{ github.event.pull_request.head.ref }}"
+          echo "Source Branch: $HEAD_REF"
+          if [[ "$HEAD_REF" == "main" || "$HEAD_REF" == "master" ]]; then
+            echo "::error::PRs from '$HEAD_REF' branch are not allowed. Please use a feature branch (e.g., solution-issue001)."
+            echo "ERROR: Source branch cannot be 'main' or 'master'."
+            exit 1
+          fi
+
   parse-pr-title:
     name: Parse PR Title
+    needs: validate-branch
     runs-on: ubuntu-latest
     if: startsWith(github.event.pull_request.title, 'Solution - ')
     outputs:
@@ -149,6 +164,14 @@ jobs:
             const score = '${{ steps.run_validator.outputs.score }}' || '0';
             const maxScore = '${{ steps.run_validator.outputs.max_score }}' || '100';
             const status = '${{ steps.run_validator.outputs.status }}' || 'FAIL';
+            let nextPhaseMsg = '';
+            
+            if (status === 'PASS') {
+              nextPhaseMsg = `### ✅ Siguiente Fase: APROBADO\n\n**Score:** ${score} / ${maxScore}\n**Estado:** El candidato ha superado el umbral (70/100). Proceder a revisión técnica.`;
+            } else {
+              nextPhaseMsg = `### ❌ Siguiente Fase: NO APROBADO\n\n**Score:** ${score} / ${maxScore}\n**Estado:** El candidato no alcanzó el umbral mínimo (70/100). Requiere correcciones.`;
+            }
+
             let output = 'No output available';
             try {
               output = fs.readFileSync('results.txt', 'utf8');
@@ -158,12 +181,14 @@ jobs:
             const prNumber = context.payload.pull_request.number;
             const emoji = status === 'PASS' ? ':white_check_mark:' : ':x:';
             const resultEmoji = status === 'PASS' ? ':tada:' : ':warning:';
+
             const body = `## ${emoji} Solution Validation Results
 
-            **Candidate:** ${candidate} | **Issue:** ${issue} | **Score:** **${score}/${maxScore}** | **Status:** ${status}
+            ${nextPhaseMsg}
 
             ---
             <details><summary>Full Output</summary>
+
 
             \`\`\`
             ${output}

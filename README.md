@@ -44,6 +44,43 @@ Este assessment evalúa habilidades en:
 
 ---
 
+## Flujo Recomendado: Después del Issue 001
+
+Una vez hayas completado tu primer issue (normalmente el Issue 001), sigue estos pasos para enviar tu solución correctamente y asegurar que sea evaluada.
+
+### 1. Preparar tu Envío
+
+Nunca envíes cambios directamente desde la rama `main` de tu fork. Usa siempre una rama dedicada para cada issue.
+
+```bash
+# Crear una rama para tu solución
+git checkout -b solution-issue001
+
+# Realizar tus cambios y commits
+git add .
+git commit -m "Implementación de solución para Issue 001"
+
+# Subir la rama a tu fork
+git push origin solution-issue001
+```
+
+### 2. Crear el Pull Request (PR)
+
+1. Ve a tu fork en GitHub.
+2. Verás un aviso para crear un PR desde tu rama recién subida.
+3. Asegúrate de que el base repository sea `bi-technical-assessment` (rama `main`) y el head repository sea **tu fork** (rama `solution-issue001`).
+4. **IMPORTANTE**: No aceptamos PRs desde la rama `main` de tu fork. El sistema de validación los rechazará automáticamente.
+
+### 3. Verificar Resultados
+
+Una vez abierto el PR:
+
+- Ve a la pestaña **Actions** en tu fork (debes habilitar Actions si es la primera vez).
+- O espera a que el bot comente en tu PR con el resultado de la validación.
+- Si el estado es **PASS** (Score >= 70), tu solución será revisada por el equipo técnico.
+
+---
+
 ## Catálogo de Issues
 
 | Issue | Título | Dificultad | Archivos | Puntos | Tiempo Est. |
