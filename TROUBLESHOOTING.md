@@ -144,7 +144,6 @@ Get-Content .\.github\workflows\validate-solution.yml
 # Si falla localmente, corregir antes de hacer PR
 ```
 
-
 ### Problema: "Fork creado pero GitHub Actions no se ejecutan"
 
 **Causa**: Por defecto, GitHub deshabilita los workflows en repositorios forkeados por seguridad.
