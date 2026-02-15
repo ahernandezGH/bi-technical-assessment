@@ -21,12 +21,12 @@
     Contraseña SQL
     
 .EXAMPLE
-    .\Test-Environment.ps1 -Username "rl" -Password "rl2"
+    .\Test-Environment.ps1 -Username "sa" -Password "rl2"
 #>
 
 param(
     [string]$ServerName = "localhost",
-    [string]$Username = "rl",
+    [string]$Username = "sa",
     [string]$Password = "rl2"
 )
 
